@@ -1,0 +1,46 @@
+# BASIC INFORMATION
+info:
+  title: Bear
+  subtitle: ""
+  author: B1ear
+  url: https://B1ear.github.io
+
+# HOME BANNER
+home_banner:
+  enable: true
+  style: fixed
+  image:
+    light: /images/bg.jpg
+    dark: /images/bg.jpg
+  title: Bear
+  subtitle:
+    text:
+      - I'm fine thank you
+  text_color:
+    light: "#fff"
+    dark: "#d1d1b6"
+
+# NAVIGATION BAR
+navbar:
+  color:
+    left: "transparent"
+    right: "transparent"
+    transparency: 10
+
+# FOOTER
+footer:
+  runtime: true
+  start: 2026/04/30 00:00:00
+  statistics: true
+
+# INJECT
+inject:
+  enable: true
+  head:
+    - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}</style>"
+    - "<script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'')})</script>"
+
+# PLUGINS
+plugins:
+  mathjax:
+    enable: true
