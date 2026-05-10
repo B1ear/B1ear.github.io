@@ -5,6 +5,20 @@ info:
   author: B1ear
   url: https://B1ear.github.io
 
+# IMAGE
+defaults:
+  avatar: /images/avatar.jpg
+  favicon: /images/avatar.jpg
+
+# ARTICLES
+articles:
+  author_label:
+    enable: false
+
+# COMMENT
+comment:
+  enable: false
+
 # HOME BANNER
 home_banner:
   enable: true
@@ -26,18 +40,42 @@ navbar:
     left: "transparent"
     right: "transparent"
     transparency: 10
+  links:
+    Home:
+      path: /
+      icon: fa-regular fa-house
+    Archives:
+      path: /archives
+      icon: fa-regular fa-archive
+    Categories:
+      path: /categories
+      icon: fa-regular fa-folder
+    Tags:
+      path: /tags
+      icon: fa-regular fa-tags
 
 # FOOTER
 footer:
-  runtime: true
-  start: 2026/04/30 00:00:00
-  statistics: true
+  runtime: false
+  statistics: false
+  icon: '<i class="fa-solid fa-lollipop"></i>'
+  start: ""
+
+# GLOBAL
+global:
+  website_counter:
+    enable: false
 
 # INJECT
+# home-banner-background: 首页背景图模糊，5px为模糊半径
+# navbar-content.has-home-banner: 导航栏文字颜色（淡黄 #fffde7）
+# .markdown-body h1-h6: 内容区各级标题字号 (rem单位，1rem≈16px)
+#   h1: 1.35rem, h2: 1.1rem, h3: 1.05rem, h4: 1rem
+# article-title-regular/cover: 文章页标题字号 3.0rem，!important强制覆盖主题默认值
 inject:
   enable: true
   head:
-    - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}</style>"
+    - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>"
     - "<script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'')})</script>"
 
 # PLUGINS
