@@ -1,6 +1,6 @@
 # BASIC INFORMATION
 info:
-  title: Bear
+  title: B1ear
   subtitle: ""
   author: B1ear
   url: https://B1ear.github.io
@@ -26,13 +26,29 @@ home_banner:
   image:
     light: /images/bg.jpg
     dark: /images/bg.jpg
-  title: Bear
+  title: B1ear's Security Blog
   subtitle:
     text:
-      - I'm fine thank you
+      - "Pwn | Web | CTF Writeups"
+      - "Binary Exploitation"
+      - "Security Research"
+      - "Capture The Flag"
+    typing_speed: 80
+    backing_speed: 40
+    starting_delay: 800
+    backing_delay: 2000
+    loop: true
   text_color:
     light: "#fff"
     dark: "#d1d1b6"
+  social_links:
+    enable: true
+    style: default
+    links:
+      - icon: github
+        url: https://github.com/B1ear
+      - icon: email
+        url: b1earr@163.com
 
 # NAVIGATION BAR
 navbar:
@@ -75,7 +91,7 @@ global:
 inject:
   enable: true
   head:
-    - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>"
+    - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.home-banner-container .description{font-size:3.5rem;text-shadow:2px 2px 8px rgba(0,0,0,0.5)}.home-banner-container .description p i{font-size:1.5rem;text-shadow:1px 1px 4px rgba(0,0,0,0.3)}.home-banner-container .content{margin-bottom:2rem}.social-contacts .social-contact-item.email~.social-contact-item.email{display:none!important}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>"
     - "<script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'')})</script>"
 
 # PLUGINS

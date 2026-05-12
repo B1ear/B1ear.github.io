@@ -1,0 +1,330 @@
+# BASIC INFORMATION
+info:
+  title: B1ear
+  subtitle: ""
+  author: B1ear
+  url: https://B1ear.github.io
+
+# IMAGE
+defaults:
+  favicon: /images/avatar.jpg
+  logo:
+  avatar: /images/avatar.jpg
+
+# COLORS
+colors:
+  primary: "#A31F34"
+  secondary:
+  default_mode: light
+
+# SITE CUSTOMIZATION
+global:
+  fonts:
+    chinese:
+      enable: false
+      family:
+      url:
+    english:
+      enable: false
+      family:
+      url:
+    title:
+      enable: false
+      family:
+      url:
+  content_max_width: 1000px
+  sidebar_width: 210px
+  hover:
+    shadow: true
+    scale: false
+  scroll_progress:
+    bar: false
+    percentage: true
+  website_counter:
+    url: https://cn.vercount.one/js
+    enable: false
+    site_pv: true
+    site_uv: true
+    post_pv: true
+  single_page: true
+  preloader:
+    enable: false
+    custom_message:
+  side_tools:
+    gear_rotation: true
+    auto_expand: false
+  open_graph:
+    enable: true
+    image: /images/redefine-og.webp
+    description: Hexo Theme Redefine, Redefine Your Hexo Journey.
+  google_analytics:
+    enable: false
+    id:
+
+# FONTAWESOME
+fontawesome:
+  thin: false
+  light: false
+  duotone: false
+  sharp_solid: false
+
+# HOME BANNER
+home_banner:
+  enable: true
+  style: fixed
+  image:
+    light: /images/bg.jpg
+    dark: /images/bg.jpg
+  title: B1ear's Security Blog
+  subtitle:
+    text:
+      - "Pwn | Web | CTF Writeups"
+      - "Binary Exploitation"
+      - "Security Research"
+      - "Capture The Flag"
+    hitokoto:
+      enable: false
+      show_author: false
+      api: https://v1.hitokoto.cn
+    typing_speed: 80
+    backing_speed: 40
+    starting_delay: 800
+    backing_delay: 2000
+    loop: true
+    smart_backspace: true
+  text_color:
+    light: "#fff"
+    dark: "#d1d1b6"
+  text_style:
+    title_size: 2.8rem
+    subtitle_size: 1.5rem
+    line_height: 1.2
+  custom_font:
+    enable: false
+    family:
+    url:
+  social_links:
+    enable: true
+    style: default
+    links:
+      - icon: github
+        url: https://github.com/B1ear
+      - icon: email
+        url: b1earr@163.com
+    qrs:
+      - icon: weixin
+        qr:
+      - icon: /images/custom-icon.svg
+        qr:
+
+# NAVIGATION BAR
+navbar:
+  auto_hide: false
+  color:
+    left: "transparent"
+    right: "transparent"
+    transparency: 10
+  width:
+    home: 1200px
+    pages: 1000px
+  links:
+    Home:
+      path: /
+      icon: fa-regular fa-house
+    Archives:
+      path: /archives
+      icon: fa-regular fa-archive
+    Categories:
+      path: /categories
+      icon: fa-regular fa-folder
+    Tags:
+      path: /tags
+      icon: fa-regular fa-tags
+  search:
+    enable: false
+    preload: true
+
+# HOME PAGE ARTICLE SETTINGS
+home:
+  sidebar:
+    enable: true
+    position: left
+    first_item: menu
+    announcement:
+    show_on_mobile: true
+    links:
+  article_date_format: auto
+  excerpt_length: 200
+  categories:
+    enable: true
+    limit: 3
+  tags:
+    enable: true
+    limit: 3
+
+# ARTICLES
+articles:
+  style:
+    font_size: 16px
+    line_height: 1.5
+    image_border_radius: 14px
+    image_alignment: center
+    image_caption: false
+    link_icon: true
+    delete_mask: false
+    title_alignment: left
+    headings_top_spacing:
+      h1: 3.2rem
+      h2: 2.4rem
+      h3: 1.9rem
+      h4: 1.6rem
+      h5: 1.4rem
+      h6: 1.3rem
+  word_count:
+    enable: true
+    count: true
+    min2read: true
+  author_label:
+    enable: false
+    auto: false
+    list: []
+  code_block:
+    copy: true
+    style: mac
+    highlight_theme:
+      light: github
+      dark: vs2015
+    font:
+      enable: false
+      family:
+      url:
+  toc:
+    enable: true
+    max_depth: 3
+    number: false
+    expand: true
+    init_open: true
+  copyright:
+    enable: true
+    default: cc_by_nc_sa
+  lazyload: true
+  pangu_js: false
+  recommendation:
+    enable: false
+    title: 推荐阅读
+    limit: 3
+    mobile_limit: 2
+    placeholder: /images/wallhaven-wqery6-light.webp
+    skip_dirs: []
+
+# COMMENT
+comment:
+  enable: false
+  system: waline
+  config:
+    waline:
+      serverUrl: https://example.example.com
+      lang: zh-CN
+      emoji: []
+      recaptchaV3Key:
+      turnstileKey:
+      reaction: false
+    gitalk:
+      clientID:
+      clientSecret:
+      repo:
+      owner:
+      proxy:
+    twikoo:
+      version: 1.6.10
+      server_url:
+      region:
+    giscus:
+      repo:
+      repo_id:
+      category:
+      category_id:
+      mapping: pathname
+      strict: 0
+      reactions_enabled: 1
+      emit_metadata: 0
+      lang: en
+      input_position: bottom
+      loading: lazy
+    artalk:
+      server:
+      site:
+    utterances:
+      repo:
+      issue_term: pathname
+      issue_number:
+      label:
+      theme_light: github-light
+      theme_dark: github-dark
+
+# FOOTER
+footer:
+  runtime: false
+  icon: '<i class="fa-solid fa-lollipop"></i>'
+  start: ""
+  statistics: false
+  customize:
+  icp:
+    enable: false
+    number:
+    url:
+
+# INJECT
+# home-banner-background: 首页背景图模糊，5px为模糊半径
+# navbar-content.has-home-banner: 导航栏文字颜色（淡黄 #fffde7）
+# .markdown-body h1-h6: 内容区各级标题字号 (rem单位，1rem≈16px)
+#   h1: 2.5rem, h2: 2.0rem, h3: 1.5rem, h4: 1rem
+# article-title-regular/cover: 文章页标题字号 3.0rem，!important强制覆盖主题默认值
+inject:
+  enable: true
+  head:
+    - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.home-banner-container .description{font-size:3.5rem;text-shadow:2px 2px 8px rgba(0,0,0,0.5)}.home-banner-container .description p i{font-size:1.5rem;text-shadow:1px 1px 4px rgba(0,0,0,0.3)}.home-banner-container .content{margin-bottom:2rem}.home-banner-container [onclick='scrollToMain()']{display:none!important}.scroll-v-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);cursor:pointer;z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .4s ease}.scroll-v-indicator span{display:block;color:rgba(255,255,255,0.9);font-size:1.6rem;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.2);transform:scaleX(3.8);animation:scrollV 1.8s ease-in-out infinite}.scroll-v-indicator span:nth-child(2){animation-delay:.2s}.scroll-v-indicator span:nth-child(3){animation-delay:.4s}@keyframes scrollV{0%,100%{opacity:.2;transform:scaleX(3.8) translateY(0)}50%{opacity:.6;transform:scaleX(3.8) translateY(8px)}}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>"
+    - "<script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'');var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>"
+  footer:
+    -
+    -
+
+# PLUGINS
+plugins:
+  feed:
+    enable: false
+  aplayer:
+    enable: false
+    type: fixed
+    audios:
+      - name:
+        artist:
+        url:
+        cover:
+        lrc:
+  mermaid:
+    enable: false
+    version: "11.4.1"
+    theme:
+      light: "default"
+      dark: "dark"
+  mathjax:
+    enable: true
+
+# PAGE TEMPLATES
+page_templates:
+  friends_column: 2
+  tags_style: blur
+  masonry:
+    batch_size: 12
+    initial_batch_size: 24
+
+# CDN
+cdn:
+  enable: false
+  provider: npmmirror
+  custom_url:
+
+# DEVELOPER MODE
+developer:
+  enable: false
