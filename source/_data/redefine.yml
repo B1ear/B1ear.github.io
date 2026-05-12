@@ -78,7 +78,7 @@ home_banner:
   title: B1ear's Security Blog
   subtitle:
     text:
-      - "Pwn | Web | CTF Writeups"
+      - "Pwn | Web | Reverse"
       - "Binary Exploitation"
       - "Security Research"
       - "Capture The Flag"
