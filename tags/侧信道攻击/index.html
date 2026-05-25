@@ -87,9 +87,9 @@
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Bear">
+<meta property="og:title" content="B1ear">
 <meta property="og:url" content="http://example.com/tags/%E4%BE%A7%E4%BF%A1%E9%81%93%E6%94%BB%E5%87%BB/index.html">
-<meta property="og:site_name" content="Bear">
+<meta property="og:site_name" content="B1ear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
@@ -125,7 +125,22 @@
     
             
                 
-                    <script data-swup-reload-script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'');var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                    <script>document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                
+    
+            
+                
+                    <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}}</script>
+                
+    
+            
+                
+                    <script src='/js/mathjax/tex-mml-chtml.js'></script>
+                
+    
+            
+                
+                    <script>(function(){function typeset(){if(window.MathJax&&MathJax.typesetPromise)window.MathJax.typesetPromise().catch(function(){})}if(window.swup&&window.swup.hooks)window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)});else window.addEventListener('redefine:swup:ready',function(){window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)})});document.addEventListener('DOMContentLoaded',typeset)})()</script>
                 
     
 
@@ -387,7 +402,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">59</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">62</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -395,7 +410,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">18</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -426,13 +441,25 @@
         <section class="archive-item mb-spacing-unit last:mb-0">
             <div class="archive-item-header flex flex-row items-center mb-2">
                 <span class="archive-year font-semibold text-3xl mr-2">2026</span>
-                <span class="archive-year-post-count text-xs md:text-sm font-bold rounded-small bg-third-background-color py-[2px] px-[10px] border border-border-color">1</span>
+                <span class="archive-year-post-count text-xs md:text-sm font-bold rounded-small bg-third-background-color py-[2px] px-[10px] border border-border-color">2</span>
             </div>
             
             <ul class="article-list pl-0 md:pl-8 text-lg leading-[1.5]">
                 
                     
                     
+                         <!-- Close the previous LI if not the first item -->
+                        <li class="article-item space-y-2 px-6 pt-10 pb-2 text-xl relative border-l-2 border-border-color" date-is='05-25'>
+                    
+                    <a href="/2026/05/25/montgomery-multiplication/" class="block w-fit">
+                        <span class="article-title my-0.5 text-2xl">Montgomery 模乘算法与恒定时间防护</span>
+                    </a>
+                    
+                
+                    
+                    
+                        
+                            </li>
                          <!-- Close the previous LI if not the first item -->
                         <li class="article-item space-y-2 px-6 pt-10 pb-2 text-xl relative border-l-2 border-border-color" date-is='05-23'>
                     
@@ -648,7 +675,7 @@
 
 
 
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+<script src="/js/build/libs/moment-with-locales.min.js"></script>
 
 
 

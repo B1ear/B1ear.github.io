@@ -87,9 +87,9 @@
         
         <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Bear">
+<meta property="og:title" content="B1ear">
 <meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Bear">
+<meta property="og:site_name" content="B1ear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
@@ -107,7 +107,7 @@
     
     <title>
         
-            B1ear - Redefine Your Hexo Journey.
+            B1ear -  
         
     </title>
 
@@ -125,7 +125,22 @@
     
             
                 
-                    <script data-swup-reload-script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'');var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                    <script>document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                
+    
+            
+                
+                    <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}}</script>
+                
+    
+            
+                
+                    <script src='/js/mathjax/tex-mml-chtml.js'></script>
+                
+    
+            
+                
+                    <script>(function(){function typeset(){if(window.MathJax&&MathJax.typesetPromise)window.MathJax.typesetPromise().catch(function(){})}if(window.swup&&window.swup.hooks)window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)});else window.addEventListener('redefine:swup:ready',function(){window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)})});document.addEventListener('DOMContentLoaded',typeset)})()</script>
                 
     
 
@@ -511,7 +526,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">59</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">62</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -519,7 +534,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">18</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -549,7 +564,7 @@
 </div>
                 <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">59</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">62</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -557,7 +572,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">18</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -572,6 +587,90 @@
 			<div class="main-content">
 				<div class="home-content-container">
     <ul class="home-article-list">
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2026/05/25/montgomery-multiplication/">
+                            Montgomery 模乘算法与恒定时间防护
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            
+                            
+硬件安全课程笔记 | 用移位代除法，用空间换安全
+
+0x01 传统模乘的痛点与安全漏洞在公钥密码体制（RSA-2048、ECC-256）中，底层核心高频操作是大数模幂或标量乘法，最终均由成百上千次连续的模乘运算（$x \cdot y \bmod N$）构成。
+原始取模的漏洞传统模乘依赖除法取余。在硬件或软件底层实现中，求模需要通过多次条件循环减去模数 $N$。
+
+致命痛点：循环次数与乘积中...
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Mon May 25 2026 00:00:00 GMT+0000">
+                
+                    2026-05-25
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/algorithm/">algorithm</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Montgomery/">Montgomery</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/%E6%A8%A1%E4%B9%98/">模乘</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2026/05/25/montgomery-multiplication/">Read more<span class="seo-reader-text">Montgomery 模乘算法与恒定时间防护</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
         
             <li class="home-article-item">
 
@@ -639,12 +738,12 @@
                     
                         <li>
                             | 
-                            <a href="/tags/%E6%A8%A1%E5%B9%82%E8%BF%90%E7%AE%97/">模幂运算</a>&nbsp;
+                            <a href="/tags/%E4%BE%A7%E4%BF%A1%E9%81%93%E6%94%BB%E5%87%BB/">侧信道攻击</a>&nbsp;
                         </li>
                     
                         <li>
                             | 
-                            <a href="/tags/ECC/">ECC</a>&nbsp;
+                            <a href="/tags/%E6%81%92%E5%AE%9A%E6%97%B6%E9%97%B4%E7%AE%97%E6%B3%95/">恒定时间算法</a>&nbsp;
                         </li>
                     
                 </ul>
@@ -1047,17 +1146,17 @@ fork 多进程、字符串替换、Copy-on-Write 机制
                     
                         <li>
                             
-                            <a href="/tags/fork/">fork</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
                             <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9B%BF%E6%8D%A2/">字符串替换</a>&nbsp;
                         </li>
                     
                         <li>
                             | 
-                            <a href="/tags/%E5%A4%9A%E8%BF%9B%E7%A8%8B/">多进程</a>&nbsp;
+                            <a href="/tags/ASCII/">ASCII</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/fork/">fork</a>&nbsp;
                         </li>
                     
                 </ul>
@@ -1467,115 +1566,6 @@ glibc 2.23 经典堆利用 | Chunk Overlapping + Fastbin Poisoning + One Gadget
                 </div>
             </li>
         
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2026/05/10/ret2dl-resolve/">
-                            ret2dl_resolve 无输出环境下的动态链接劫持
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            
-                            
-64位 ret2dl_resolve 与无输出环境下的生存技巧
-
-0x01 题目环境
-
-
-项目
-内容
-
-
-
-架构
-64-bit (amd64)
-
-
-NX
-Enabled（栈不可执行）
-
-
-PIE
-Disabled（代码段地址固定 0x400000）
-
-
-RELRO
-Partial RELRO（GOT 表和 Link Map 可写）
-
-
-Libc
-libc-2.27.so
-
-
-核心困境：整个...
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Sun May 10 2026 21:30:00 GMT+0000">
-                
-                    2026-05-10
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/pwn/">pwn</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/64%E4%BD%8D/">64位</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/ret2dl-resolve/">ret2dl_resolve</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5/">动态链接</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2026/05/10/ret2dl-resolve/">Read more<span class="seo-reader-text">ret2dl_resolve 无输出环境下的动态链接劫持</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
     </ul>
 
     <div class="home-paginator px-7 py-5">
@@ -1771,7 +1761,7 @@ libc-2.27.so
 
 
 
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+<script src="/js/build/libs/moment-with-locales.min.js"></script>
 
 
 

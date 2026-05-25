@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="B1ear">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2026/05/25/montgomery-multiplication/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Montgomery 模乘算法与恒定时间防护">
+<meta property="og:url" content="http://example.com/2026/05/25/montgomery-multiplication/index.html">
+<meta property="og:site_name" content="B1ear">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-05-25T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-25T05:25:26.461Z">
+<meta property="article:author" content="B1ear">
+<meta property="article:tag" content="Montgomery">
+<meta property="article:tag" content="侧信道攻击">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="恒定时间算法">
+<meta property="article:tag" content="模乘">
+<meta property="article:tag" content="硬件安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/avatar.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Montgomery 模乘算法与恒定时间防护 | B1ear
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+        
+            
+                
+                    <style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.home-banner-container .description{font-size:3.5rem;text-shadow:2px 2px 8px rgba(0,0,0,0.5)}.home-banner-container .description p i{font-size:1.5rem;text-shadow:1px 1px 4px rgba(0,0,0,0.3)}.home-banner-container .content{margin-bottom:2rem}.home-banner-container [onclick='scrollToMain()']{display:none!important}.scroll-v-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);cursor:pointer;z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .4s ease}.scroll-v-indicator span{display:block;color:rgba(255,255,255,0.9);font-size:1.6rem;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.2);transform:scaleX(3.8);animation:scrollV 1.8s ease-in-out infinite}.scroll-v-indicator span:nth-child(2){animation-delay:.2s}.scroll-v-indicator span:nth-child(3){animation-delay:.4s}@keyframes scrollV{0%,100%{opacity:.2;transform:scaleX(3.8) translateY(0)}50%{opacity:.6;transform:scaleX(3.8) translateY(8px)}}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>
+                
+    
+            
+                
+                    <script>document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                
+    
+            
+                
+                    <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}}</script>
+                
+    
+            
+                
+                    <script src='/js/mathjax/tex-mml-chtml.js'></script>
+                
+    
+            
+                
+                    <script>(function(){function typeset(){if(window.MathJax&&MathJax.typesetPromise)window.MathJax.typesetPromise().catch(function(){})}if(window.swup&&window.swup.hooks)window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)});else window.addEventListener('redefine:swup:ready',function(){window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)})});document.addEventListener('DOMContentLoaded',typeset)})()</script>
+                
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/bg.jpg","dark":"/images/bg.jpg"},"title":"B1ear's Security Blog","subtitle":{"text":["Pwn | Web | Reverse","Binary Exploitation","Security Research","Capture The Flag"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":80,"backing_speed":40,"starting_delay":800,"backing_delay":2000,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/B1ear"},{"icon":"fa-solid fa-at","url":"b1earr@163.com"}],"qrs":[{"icon":"fa-brands fa-weixin","qr":null},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}},"mathjax":{"enable":true}},"version":"2.9.0","navbar":{"auto_hide":false,"color":{"left":"transparent","right":"transparent","transparency":10},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":false,"icon":"<i class=\"fa-solid fa-lollipop\"></i>","start":"","statistics":false,"customize":null,"icp":{"enable":false,"number":null,"url":null}},"footerStart":"","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                B1ear
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags"
+                                        >
+                                    <i class="fa-regular fa-tags fa-fw"></i>
+                                    TAGS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags"
+                        >
+                            <span>
+                                TAGS
+                            </span>
+                            
+                                <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">62</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Montgomery 模乘算法与恒定时间防护</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-05-25</span>
+        <span class="mobile">2026-05-25</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-05-25 05:25:26</span>
+            <span class="mobile">2026-05-25 05:25:26</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/algorithm/">algorithm</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Montgomery/">Montgomery</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A8%A1%E4%B9%98/">模乘</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%BE%A7%E4%BF%A1%E9%81%93%E6%94%BB%E5%87%BB/">侧信道攻击</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%81%92%E5%AE%9A%E6%97%B6%E9%97%B4%E7%AE%97%E6%B3%95/">恒定时间算法</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%A1%AC%E4%BB%B6%E5%AE%89%E5%85%A8/">硬件安全</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>硬件安全课程笔记 | 用移位代除法，用空间换安全</p>
+</blockquote>
+<h2 id="0x01-传统模乘的痛点与安全漏洞"><a href="#0x01-传统模乘的痛点与安全漏洞" class="headerlink" title="0x01 传统模乘的痛点与安全漏洞"></a>0x01 传统模乘的痛点与安全漏洞</h2><p>在公钥密码体制（RSA-2048、ECC-256）中，底层核心高频操作是大数模幂或标量乘法，最终均由成百上千次连续的<strong>模乘运算</strong>（$x \cdot y \bmod N$）构成。</p>
+<h3 id="原始取模的漏洞"><a href="#原始取模的漏洞" class="headerlink" title="原始取模的漏洞"></a>原始取模的漏洞</h3><p>传统模乘依赖除法取余。在硬件或软件底层实现中，求模需要通过多次条件循环减去模数 $N$。</p>
+<ul>
+<li><strong>致命痛点</strong>：循环次数与乘积中间结果的大小直接相关</li>
+<li><strong>侧信道风险</strong>：求模运算的时间强烈依赖于输入数据，攻击者可通过高精度示波器或定时器测量耗时差异，实施<strong>时序侧信道攻击（Timing Attack）</strong>，反推秘密密钥</li>
+</ul>
+<h3 id="硬件实现的物理开销"><a href="#硬件实现的物理开销" class="headerlink" title="硬件实现的物理开销"></a>硬件实现的物理开销</h3><p>在 FPGA 或 ASIC 芯片设计中，任意模数的大数除法器电路极度复杂，占用巨大芯片面积（Area），带来严重功耗（Power）与长关键路径延迟（Delay）。</p>
+<h2 id="0x02-Montgomery-算法的核心防护原理"><a href="#0x02-Montgomery-算法的核心防护原理" class="headerlink" title="0x02 Montgomery 算法的核心防护原理"></a>0x02 Montgomery 算法的核心防护原理</h2><p>核心思想：<strong>通过数学变换（空间映射），将复杂的除法取模转化为高效、耗时恒定的”移位和加法”操作，实现求模运算时间的均衡化（Constant Time）</strong>。</p>
+<h3 id="引入辅助参数-R"><a href="#引入辅助参数-R" class="headerlink" title="引入辅助参数 $R$"></a>引入辅助参数 $R$</h3><ul>
+<li><strong>选择条件</strong>：选择大于模数 $N$ 且与 $N$ 互质的基数 $R$（$\gcd(R, N) = 1$ 且 $R > N$）</li>
+<li><strong>硬件优化</strong>：通常选择 $R = 2^n$（$n$ 为模数 $N$ 的比特位长）</li>
+<li><strong>优化本质</strong>：对 $R$ 取模只需截取低位比特；除以 $R$ 只需硬件右移位</li>
+</ul>
+<h3 id="Montgomery-域转换"><a href="#Montgomery-域转换" class="headerlink" title="Montgomery 域转换"></a>Montgomery 域转换</h3><p>运算开始前，将普通变量映射到 Montgomery 域：</p>
+
+$$X \to X' = X \cdot R \bmod N$$
+
+$$Y \to Y' = Y \cdot R \bmod N$$
+<h2 id="0x03-REDC-核心步骤与数学边界证明"><a href="#0x03-REDC-核心步骤与数学边界证明" class="headerlink" title="0x03 REDC 核心步骤与数学边界证明"></a>0x03 REDC 核心步骤与数学边界证明</h2><p>两个 Montgomery 域内的数相乘时，结果会多出一个 $R$：</p>
+
+$$T = X' \cdot Y' = (X \cdot R) \cdot (Y \cdot R) = (X \cdot Y \cdot R) \cdot R$$
+<p>为使结果能直接作为下一次模乘的输入，必须消除多余的 $R$，这个过程称为<strong>蒙哥马利约简（Montgomery Reduction, REDC）</strong>。</p>
+<h3 id="REDC-算法伪代码"><a href="#REDC-算法伪代码" class="headerlink" title="REDC 算法伪代码"></a>REDC 算法伪代码</h3><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输入: 乘积 T (满足 T &lt; N^2), 模数 N, 辅助基数 R (满足 R &gt; N 且 gcd(R,N)=1)</span><br><span class="line">辅助常数: N&#x27; = -N^(-1) mod R</span><br><span class="line">输出: U = T * R^(-1) mod N</span><br><span class="line"></span><br><span class="line">1: m := ((T mod R) * N&#x27;) mod R    -- 极其廉价：仅含截位和大数乘法</span><br><span class="line">2: U := (T + m * N) / R           -- 极其廉价：低位全为0，硬件直接右移n位</span><br><span class="line">3: if U &gt;= N then</span><br><span class="line">4:     return U - N               -- 边界修正：最多只需减一次</span><br><span class="line">5: else</span><br><span class="line">6:     return U</span><br><span class="line">7: end if</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="严格数学边界证明：约简后范围缩小到-2N-以内"><a href="#严格数学边界证明：约简后范围缩小到-2N-以内" class="headerlink" title="严格数学边界证明：约简后范围缩小到 $2N$ 以内"></a>严格数学边界证明：约简后范围缩小到 $2N$ 以内</h3><p><strong>证明过程</strong>：</p>
+<ol>
+<li><strong>已知输入边界</strong>：操作数已在模 $N$ 剩余系中，$X' < N, Y' < N$，从而：</li>
+</ol>
+
+$$T = X' \cdot Y' < N^2$$
+<ol start="2">
+<li><strong>放大系数 $m$ 的边界</strong>：$m$ 通过 $\bmod R$ 计算，因此：</li>
+</ol>
+
+$$m < R$$
+<ol start="3">
+<li><strong>分子的联合上界</strong>：</li>
+</ol>
+
+$$T + m \cdot N < N^2 + R \cdot N$$
+<ol start="4">
+<li><strong>引入关键约束 $R > N$</strong>：两边同乘 $N$ 必有：</li>
+</ol>
+
+$$N^2 < R \cdot N$$
+<ol start="5">
+<li><strong>替换上界并化简</strong>：</li>
+</ol>
+
+$$T + m \cdot N < (R \cdot N) + R \cdot N = 2RN$$
+<ol start="6">
+<li><strong>两边同除以 $R$（执行硬件移位）</strong>：</li>
+</ol>
+
+$$U = \frac{T + m \cdot N}{R} < \frac{2RN}{R} = 2N$$
+<p><strong>结论</strong>：经过 REDC 移位压缩后，输出 $U$ 被精确锁死在 $[0, 2N - 1]$ 区间内。要放回 $[0, N-1]$ 的标准剩余系，<strong>最多只需一次减法</strong>。</p>
+<h2 id="0x04-硬件安全防护与工程价值"><a href="#0x04-硬件安全防护与工程价值" class="headerlink" title="0x04 硬件安全防护与工程价值"></a>0x04 硬件安全防护与工程价值</h2><h3 id="彻底消灭时间侧信道漏洞"><a href="#彻底消灭时间侧信道漏洞" class="headerlink" title="彻底消灭时间侧信道漏洞"></a>彻底消灭时间侧信道漏洞</h3><p>约简后结果收敛在 $2N$ 以内，工程实现最多一次减法。</p>
+<ul>
+<li><strong>常数时间消隐技术</strong>：高安全密码芯片采用”盲减&#x2F;无条件减法”——无论 $U$ 是否大于 $N$，硬件流水线都同步计算 $U - N$，最后通过恒定延迟的位掩码多路选择器（MUX），根据符号位决定保留 $U$ 还是 $U - N$</li>
+<li><strong>防护效果</strong>：芯片处理不同明文、不同密钥时，消耗的时钟周期完全一致，彻底抹平时间动态差异</li>
+</ul>
+<h3 id="大规模循环运算的闭环优势"><a href="#大规模循环运算的闭环优势" class="headerlink" title="大规模循环运算的闭环优势"></a>大规模循环运算的闭环优势</h3><p>在 RSA 模幂或 ECC 标量乘法的长周期循环中：</p>
+<ol>
+<li><strong>域转换（进场）</strong>：循环开始前仅一次转换（乘以 $R \bmod N$），开销极小</li>
+<li><strong>中间闭环（全程高效）</strong>：循环体每次模乘约简后，结果自然保持 Montgomery 域形式，数千次级联计算无需频繁切换状态，全程享受移位换除法的加速</li>
+<li><strong>逆转换（退场）</strong>：所有循环结束后，调用一次 REDC 转回标准形式</li>
+</ol>
+<h3 id="核心总结"><a href="#核心总结" class="headerlink" title="核心总结"></a>核心总结</h3><blockquote>
+<p>Montgomery 算法的核心在于：用空间换安全，用移位代除法。参数 $R > N$ 保证了约简后结果不超 $2N$，从而用最多一次减法实现了运算时间的严格均衡化，构筑了抵御时序攻击的坚实物理屏障。</p>
+</blockquote>
+<h2 id="0x05-核心考点"><a href="#0x05-核心考点" class="headerlink" title="0x05 核心考点"></a>0x05 核心考点</h2><ul>
+<li><strong>Montgomery 域映射</strong>：$X' = X \cdot R \bmod N$，将除法取模转化为移位操作</li>
+<li><strong>REDC 约简</strong>：消除多余的 $R$ 因子，输出范围严格在 $[0, 2N-1]$</li>
+<li><strong>数学边界证明</strong>：$T + mN < 2RN$，因此 $U < 2N$</li>
+<li><strong>恒定时间实现</strong>：盲减 + MUX 选择，消除时序差异</li>
+<li><strong>闭环优势</strong>：中间计算保持 Montgomery 域，仅首尾各一次域转换</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> Montgomery 模乘算法与恒定时间防护</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-05-25 00:00:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-05-25 05:25:26
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/05/25/montgomery-multiplication/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">#密码学</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Montgomery/">#Montgomery</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A8%A1%E4%B9%98/">#模乘</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E4%BE%A7%E4%BF%A1%E9%81%93%E6%94%BB%E5%87%BB/">#侧信道攻击</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%81%92%E5%AE%9A%E6%97%B6%E9%97%B4%E7%AE%97%E6%B3%95/">#恒定时间算法</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E7%A1%AC%E4%BB%B6%E5%AE%89%E5%85%A8/">#硬件安全</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/23/modular-exponentiation-side-channel/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">模幂运算与 ECC 标量乘法的侧信道安全分析</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">Montgomery 模乘算法与恒定时间防护</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E4%BC%A0%E7%BB%9F%E6%A8%A1%E4%B9%98%E7%9A%84%E7%97%9B%E7%82%B9%E4%B8%8E%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E"><span class="nav-text">0x01 传统模乘的痛点与安全漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E5%8F%96%E6%A8%A1%E7%9A%84%E6%BC%8F%E6%B4%9E"><span class="nav-text">原始取模的漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E5%AE%9E%E7%8E%B0%E7%9A%84%E7%89%A9%E7%90%86%E5%BC%80%E9%94%80"><span class="nav-text">硬件实现的物理开销</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-Montgomery-%E7%AE%97%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%E9%98%B2%E6%8A%A4%E5%8E%9F%E7%90%86"><span class="nav-text">0x02 Montgomery 算法的核心防护原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E8%BE%85%E5%8A%A9%E5%8F%82%E6%95%B0-R"><span class="nav-text">引入辅助参数 $R$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Montgomery-%E5%9F%9F%E8%BD%AC%E6%8D%A2"><span class="nav-text">Montgomery 域转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-REDC-%E6%A0%B8%E5%BF%83%E6%AD%A5%E9%AA%A4%E4%B8%8E%E6%95%B0%E5%AD%A6%E8%BE%B9%E7%95%8C%E8%AF%81%E6%98%8E"><span class="nav-text">0x03 REDC 核心步骤与数学边界证明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#REDC-%E7%AE%97%E6%B3%95%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-text">REDC 算法伪代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A5%E6%A0%BC%E6%95%B0%E5%AD%A6%E8%BE%B9%E7%95%8C%E8%AF%81%E6%98%8E%EF%BC%9A%E7%BA%A6%E7%AE%80%E5%90%8E%E8%8C%83%E5%9B%B4%E7%BC%A9%E5%B0%8F%E5%88%B0-2N-%E4%BB%A5%E5%86%85"><span class="nav-text">严格数学边界证明：约简后范围缩小到 $2N$ 以内</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-%E7%A1%AC%E4%BB%B6%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E4%B8%8E%E5%B7%A5%E7%A8%8B%E4%BB%B7%E5%80%BC"><span class="nav-text">0x04 硬件安全防护与工程价值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%BB%E5%BA%95%E6%B6%88%E7%81%AD%E6%97%B6%E9%97%B4%E4%BE%A7%E4%BF%A1%E9%81%93%E6%BC%8F%E6%B4%9E"><span class="nav-text">彻底消灭时间侧信道漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%BE%AA%E7%8E%AF%E8%BF%90%E7%AE%97%E7%9A%84%E9%97%AD%E7%8E%AF%E4%BC%98%E5%8A%BF"><span class="nav-text">大规模循环运算的闭环优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%BB%E7%BB%93"><span class="nav-text">核心总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E6%A0%B8%E5%BF%83%E8%80%83%E7%82%B9"><span class="nav-text">0x05 核心考点</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-lollipop"></i>&nbsp;&nbsp;<a href="/">B1ear</a>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js"></script>
+
+
+
+	
+</body>
+
+</html>

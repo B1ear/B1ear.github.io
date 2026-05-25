@@ -89,12 +89,12 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="模幂运算与 ECC 标量乘法的侧信道安全分析">
 <meta property="og:url" content="http://example.com/2026/05/23/modular-exponentiation-side-channel/index.html">
-<meta property="og:site_name" content="Bear">
+<meta property="og:site_name" content="B1ear">
 <meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/images/redefine-og.webp">
 <meta property="article:published_time" content="2026-05-23T00:00:00.000Z">
-<meta property="article:modified_time" content="2026-05-24T14:00:34.104Z">
+<meta property="article:modified_time" content="2026-05-25T05:25:26.461Z">
 <meta property="article:author" content="B1ear">
 <meta property="article:tag" content="ECC">
 <meta property="article:tag" content="侧信道攻击">
@@ -132,7 +132,22 @@
     
             
                 
-                    <script data-swup-reload-script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'');var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                    <script>document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                
+    
+            
+                
+                    <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}}</script>
+                
+    
+            
+                
+                    <script src='/js/mathjax/tex-mml-chtml.js'></script>
+                
+    
+            
+                
+                    <script>(function(){function typeset(){if(window.MathJax&&MathJax.typesetPromise)window.MathJax.typesetPromise().catch(function(){})}if(window.swup&&window.swup.hooks)window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)});else window.addEventListener('redefine:swup:ready',function(){window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)})});document.addEventListener('DOMContentLoaded',typeset)})()</script>
                 
     
 
@@ -394,7 +409,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">59</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">62</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -402,7 +417,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">18</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">19</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -451,8 +466,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2026-05-24 14:34</span>
-            <span class="mobile">2026-05-24 14:34</span>
+            <span class="desktop">2026-05-25 05:25:26</span>
+            <span class="mobile">2026-05-25 05:25:26</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -484,19 +499,19 @@
                     </li>
                 
                     <li>
-                        | <a href="/tags/%E6%A8%A1%E5%B9%82%E8%BF%90%E7%AE%97/">模幂运算</a>&nbsp;
-                    </li>
-                
-                    <li>
-                        | <a href="/tags/ECC/">ECC</a>&nbsp;
-                    </li>
-                
-                    <li>
                         | <a href="/tags/%E4%BE%A7%E4%BF%A1%E9%81%93%E6%94%BB%E5%87%BB/">侧信道攻击</a>&nbsp;
                     </li>
                 
                     <li>
                         | <a href="/tags/%E6%81%92%E5%AE%9A%E6%97%B6%E9%97%B4%E7%AE%97%E6%B3%95/">恒定时间算法</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A8%A1%E5%B9%82%E8%BF%90%E7%AE%97/">模幂运算</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/ECC/">ECC</a>&nbsp;
                     </li>
                 
             </ul>
@@ -525,13 +540,13 @@
 <h3 id="从高到低（Left-to-Right）"><a href="#从高到低（Left-to-Right）" class="headerlink" title="从高到低（Left-to-Right）"></a>从高到低（Left-to-Right）</h3><h4 id="核心直觉"><a href="#核心直觉" class="headerlink" title="核心直觉"></a>核心直觉</h4><p>类似我们从左到右读一个十进制数。以 523 为例：</p>
 <ol>
 <li>看到 <strong>5</strong>：当前值 &#x3D; 5</li>
-<li>看到 <strong>2</strong>：先乘以基数 10，再加新位 → $5 \times 10 + 2 &#x3D; 52$</li>
-<li>看到 <strong>3</strong>：再乘以 10，加新位 → $52 \times 10 + 3 &#x3D; 523$</li>
+<li>看到 <strong>2</strong>：先乘以基数 10，再加新位 → $5 \times 10 + 2 = 52$</li>
+<li>看到 <strong>3</strong>：再乘以 10，加新位 → $52 \times 10 + 3 = 523$</li>
 </ol>
-<p>映射到二进制幂运算：每向右走一位，指数”乘以 2”对应底数的<strong>平方</strong>，指数”加上 $d[i]$”对应底数<strong>乘以 $c$</strong>。</p>
+<p>映射到二进制幂运算：每向右走一位，指数”乘以 2”对应底数的<strong>平方</strong>，指数”加上 $d[i]$“对应底数<strong>乘以 $c$</strong>。</p>
 <h4 id="伪代码"><a href="#伪代码" class="headerlink" title="伪代码"></a>伪代码</h4><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">s := 1</span><br><span class="line">for i := w - 1 down to 0 do</span><br><span class="line">    s := s * s mod n         // 先平方</span><br><span class="line">    if d[i] == 1 then</span><br><span class="line">        s := s * c mod n     // 后乘底数 c</span><br><span class="line">    end if</span><br><span class="line">end for</span><br><span class="line">return s</span><br></pre></td></tr></table></figure></div>
 
-<h4 id="实例追踪：计算-c-5-（-5-101-2-，-d-2-1-d-1-0-d-0-1-）"><a href="#实例追踪：计算-c-5-（-5-101-2-，-d-2-1-d-1-0-d-0-1-）" class="headerlink" title="实例追踪：计算 $c^5$（$5 &#x3D; 101_2$，$d[2]&#x3D;1, d[1]&#x3D;0, d[0]&#x3D;1$）"></a>实例追踪：计算 $c^5$（$5 &#x3D; 101_2$，$d[2]&#x3D;1, d[1]&#x3D;0, d[0]&#x3D;1$）</h4><table>
+<h4 id="实例追踪：计算-c-5-（-5-101-2-，-d-2-1-d-1-0-d-0-1-）"><a href="#实例追踪：计算-c-5-（-5-101-2-，-d-2-1-d-1-0-d-0-1-）" class="headerlink" title="实例追踪：计算 $c^5$（$5 = 101_2$，$d[2]=1, d[1]=0, d[0]=1$）"></a>实例追踪：计算 $c^5$（$5 = 101_2$，$d[2]=1, d[1]=0, d[0]=1$）</h4><table>
 <thead>
 <tr>
 <th>步骤</th>
@@ -543,37 +558,39 @@
 <tbody><tr>
 <td>初始</td>
 <td>-</td>
-<td>$s &#x3D; 1$</td>
-<td>$s &#x3D; 1$</td>
+<td>$s = 1$</td>
+<td>$s = 1$</td>
 </tr>
 <tr>
-<td>$i&#x3D;2$</td>
-<td>$d[2]&#x3D;1$</td>
-<td>$s &#x3D; 1^2 &#x3D; 1$，再 $s &#x3D; 1 \times c &#x3D; c$</td>
-<td>$s &#x3D; c$</td>
+<td>$i=2$</td>
+<td>$d[2]=1$</td>
+<td>$s = 1^2 = 1$，再 $s = 1 \times c = c$</td>
+<td>$s = c$</td>
 </tr>
 <tr>
-<td>$i&#x3D;1$</td>
-<td>$d[1]&#x3D;0$</td>
-<td>$s &#x3D; c^2$，跳过乘法</td>
-<td>$s &#x3D; c^2$</td>
+<td>$i=1$</td>
+<td>$d[1]=0$</td>
+<td>$s = c^2$，跳过乘法</td>
+<td>$s = c^2$</td>
 </tr>
 <tr>
-<td>$i&#x3D;0$</td>
-<td>$d[0]&#x3D;1$</td>
-<td>$s &#x3D; (c^2)^2 &#x3D; c^4$，再 $s &#x3D; c^4 \times c &#x3D; c^5$</td>
-<td>$s &#x3D; c^5$</td>
+<td>$i=0$</td>
+<td>$d[0]=1$</td>
+<td>$s = (c^2)^2 = c^4$，再 $s = c^4 \times c = c^5$</td>
+<td>$s = c^5$</td>
 </tr>
 </tbody></table>
-<p><strong>数学规律</strong>：循环每一步中，$s$ 计算的都是 $c^{\lfloor d &#x2F; 2^i \rfloor}$。当 $i$ 降到 0 时，$\lfloor d &#x2F; 2^0 \rfloor &#x3D; d$ 本身。</p>
+<p><strong>数学规律</strong>：循环每一步中，$s$ 计算的都是 $c^{\lfloor d / 2^i \rfloor}$。当 $i$ 降到 0 时，$\lfloor d / 2^0 \rfloor = d$ 本身。</p>
 <h3 id="从低到高（Right-to-Left）"><a href="#从低到高（Right-to-Left）" class="headerlink" title="从低到高（Right-to-Left）"></a>从低到高（Right-to-Left）</h3><h4 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h4><p>将指数 $d$ 做二进制展开：</p>
-<p>$$d &#x3D; d_0 \cdot 2^0 + d_1 \cdot 2^1 + d_2 \cdot 2^2 + \dots$$</p>
+
+$$d = d_0 \cdot 2^0 + d_1 \cdot 2^1 + d_2 \cdot 2^2 + \dots$$
 <p>则幂运算拆为乘积：</p>
-<p>$$c^d &#x3D; c^{d_0 \cdot 2^0} \cdot c^{d_1 \cdot 2^1} \cdot c^{d_2 \cdot 2^2} \dots$$</p>
-<p>维护一个底数自乘变量 $A$，每轮平方依次变为 $c^1, c^2, c^4, c^8 \dots$。若当前位 $d[i] &#x3D; 1$，就把 $A$ 乘入累乘器 $R$。</p>
+
+$$c^d = c^{d_0 \cdot 2^0} \cdot c^{d_1 \cdot 2^1} \cdot c^{d_2 \cdot 2^2} \dots$$
+<p>维护一个底数自乘变量 $A$，每轮平方依次变为 $c^1, c^2, c^4, c^8 \dots$。若当前位 $d[i] = 1$，就把 $A$ 乘入累乘器 $R$。</p>
 <h4 id="伪代码-1"><a href="#伪代码-1" class="headerlink" title="伪代码"></a>伪代码</h4><div class="code-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">R := 1</span><br><span class="line">A := c</span><br><span class="line">for i := 0 to w - 1 do</span><br><span class="line">    if d[i] == 1 then</span><br><span class="line">        R := R * A mod n</span><br><span class="line">    end if</span><br><span class="line">    A := A * A mod n</span><br><span class="line">end for</span><br><span class="line">return R</span><br></pre></td></tr></table></figure></div>
 
-<h4 id="实例追踪：计算-c-5-（-5-101-2-，-d-0-1-d-1-0-d-2-1-）"><a href="#实例追踪：计算-c-5-（-5-101-2-，-d-0-1-d-1-0-d-2-1-）" class="headerlink" title="实例追踪：计算 $c^5$（$5 &#x3D; 101_2$，$d[0]&#x3D;1, d[1]&#x3D;0, d[2]&#x3D;1$）"></a>实例追踪：计算 $c^5$（$5 &#x3D; 101_2$，$d[0]&#x3D;1, d[1]&#x3D;0, d[2]&#x3D;1$）</h4><table>
+<h4 id="实例追踪：计算-c-5-（-5-101-2-，-d-0-1-d-1-0-d-2-1-）"><a href="#实例追踪：计算-c-5-（-5-101-2-，-d-0-1-d-1-0-d-2-1-）" class="headerlink" title="实例追踪：计算 $c^5$（$5 = 101_2$，$d[0]=1, d[1]=0, d[2]=1$）"></a>实例追踪：计算 $c^5$（$5 = 101_2$，$d[0]=1, d[1]=0, d[2]=1$）</h4><table>
 <thead>
 <tr>
 <th>步骤</th>
@@ -585,26 +602,26 @@
 <tbody><tr>
 <td>初始</td>
 <td>-</td>
-<td>$R &#x3D; 1$</td>
-<td>$A &#x3D; c$</td>
+<td>$R = 1$</td>
+<td>$A = c$</td>
 </tr>
 <tr>
-<td>$i&#x3D;0$</td>
-<td>$d[0]&#x3D;1$</td>
-<td>$R &#x3D; 1 \times c &#x3D; c$</td>
-<td>$A &#x3D; c^2$</td>
+<td>$i=0$</td>
+<td>$d[0]=1$</td>
+<td>$R = 1 \times c = c$</td>
+<td>$A = c^2$</td>
 </tr>
 <tr>
-<td>$i&#x3D;1$</td>
-<td>$d[1]&#x3D;0$</td>
+<td>$i=1$</td>
+<td>$d[1]=0$</td>
 <td>$R$ 不变 &#x3D; $c$</td>
-<td>$A &#x3D; (c^2)^2 &#x3D; c^4$</td>
+<td>$A = (c^2)^2 = c^4$</td>
 </tr>
 <tr>
-<td>$i&#x3D;2$</td>
-<td>$d[2]&#x3D;1$</td>
-<td>$R &#x3D; c \times c^4 &#x3D; c^5$</td>
-<td>$A &#x3D; (c^4)^2 &#x3D; c^8$</td>
+<td>$i=2$</td>
+<td>$d[2]=1$</td>
+<td>$R = c \times c^4 = c^5$</td>
+<td>$A = (c^4)^2 = c^8$</td>
 </tr>
 </tbody></table>
 <h3 id="两种算法对比"><a href="#两种算法对比" class="headerlink" title="两种算法对比"></a>两种算法对比</h3><table>
@@ -636,19 +653,20 @@
 
 <p><strong>根本原因</strong>：</p>
 <ol>
-<li><strong>运算量极度不对称</strong>：$d[i] &#x3D; 1$ 时需执行大数模乘（数千位的乘法非常吃 CPU 周期），$d[i] &#x3D; 0$ 时仅乘以 1，耗时可忽略</li>
+<li><strong>运算量极度不对称</strong>：$d[i] = 1$ 时需执行大数模乘（数千位的乘法非常吃 CPU 周期），$d[i] = 0$ 时仅乘以 1，耗时可忽略</li>
 <li><strong>时间可观测</strong>：每轮的平方耗时是固定的，总耗时的长短完全取决于 <code>if</code> 走哪边</li>
 </ol>
 <p>攻击者多次发起加密请求，用高精度时钟测量总执行时间，通过统计学方法即可逐位还原私钥。</p>
-<h3 id="从低到高算法的防御优势"><a href="#从低到高算法的防御优势" class="headerlink" title="从低到高算法的防御优势"></a>从低到高算法的防御优势</h3><p>Right-to-Left 算法中，$R$ 的乘法和 $A$ 的自平方在数学上相互独立，适合改为<strong>恒定时间算法</strong>：引入哑变量 <code>R_dummy</code>，在 $d[i] &#x3D; 0$ 时把结果乘到哑变量里，使每轮耗时完全一致。</p>
-<h2 id="0x03-ECC-标量乘法：Double-and-Add"><a href="#0x03-ECC-标量乘法：Double-and-Add" class="headerlink" title="0x03 ECC 标量乘法：Double-and-Add"></a>0x03 ECC 标量乘法：Double-and-Add</h2><h3 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h3><p>在椭圆曲线密码学中，核心运算是标量乘法 $Q &#x3D; k \cdot P$。设 $n$ 位私钥标量 $k$ 的二进制形式为：</p>
-<p>$$k &#x3D; (k_{n-1}k_{n-2}\dots k_0)<em>2 &#x3D; \sum</em>{i&#x3D;0}^{n-1} k_i 2^i$$</p>
+<h3 id="从低到高算法的防御优势"><a href="#从低到高算法的防御优势" class="headerlink" title="从低到高算法的防御优势"></a>从低到高算法的防御优势</h3><p>Right-to-Left 算法中，$R$ 的乘法和 $A$ 的自平方在数学上相互独立，适合改为<strong>恒定时间算法</strong>：引入哑变量 <code>R_dummy</code>，在 $d[i] = 0$ 时把结果乘到哑变量里，使每轮耗时完全一致。</p>
+<h2 id="0x03-ECC-标量乘法：Double-and-Add"><a href="#0x03-ECC-标量乘法：Double-and-Add" class="headerlink" title="0x03 ECC 标量乘法：Double-and-Add"></a>0x03 ECC 标量乘法：Double-and-Add</h2><h3 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h3><p>在椭圆曲线密码学中，核心运算是标量乘法 $Q = k \cdot P$。设 $n$ 位私钥标量 $k$ 的二进制形式为：</p>
+
+$$k = (k_{n-1}k_{n-2}\dots k_0)_2 = \sum_{i=0}^{n-1} k_i 2^i$$
 <p>算法通过从高位到低位扫描 $k$，利用群的阶乘倍性质，将复杂度由 $O(k)$ 降至 $O(\log k)$。</p>
 <h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><ol>
-<li><strong>初始化</strong>：令累加点 $Q &#x3D; \mathcal{O}$（无穷远点 &#x2F; 群零元）</li>
+<li><strong>初始化</strong>：令累加点 $Q = \mathcal{O}$（无穷远点 &#x2F; 群零元）</li>
 <li><strong>高位到低位循环</strong>：遍历 $i$ 从 $n-1$ 降至 0</li>
-<li><strong>无条件倍点 (Double)</strong>：每轮执行 $Q &#x3D; 2 \cdot Q$</li>
-<li><strong>条件点加 (Add)</strong>：若 $k_i &#x3D; 1$，则 $Q &#x3D; Q + P$；否则跳过</li>
+<li><strong>无条件倍点 (Double)</strong>：每轮执行 $Q = 2 \cdot Q$</li>
+<li><strong>条件点加 (Add)</strong>：若 $k_i = 1$，则 $Q = Q + P$；否则跳过</li>
 </ol>
 <h3 id="算力开销"><a href="#算力开销" class="headerlink" title="算力开销"></a>算力开销</h3><table>
 <thead>
@@ -669,7 +687,7 @@
 <td>$1 \times \text{ECDBL} + 1 \times \text{ECADD}$</td>
 </tr>
 </tbody></table>
-<h3 id="示例：计算-5P-（-k-5-101-2-）"><a href="#示例：计算-5P-（-k-5-101-2-）" class="headerlink" title="示例：计算 $5P$（$k &#x3D; 5 &#x3D; 101_2$）"></a>示例：计算 $5P$（$k &#x3D; 5 &#x3D; 101_2$）</h3><table>
+<h3 id="示例：计算-5P-（-k-5-101-2-）"><a href="#示例：计算-5P-（-k-5-101-2-）" class="headerlink" title="示例：计算 $5P$（$k = 5 = 101_2$）"></a>示例：计算 $5P$（$k = 5 = 101_2$）</h3><table>
 <thead>
 <tr>
 <th>步骤</th>
@@ -681,26 +699,26 @@
 <tbody><tr>
 <td>初始</td>
 <td>-</td>
-<td>$Q &#x3D; \mathcal{O}$</td>
-<td>$Q &#x3D; \mathcal{O}$</td>
+<td>$Q = \mathcal{O}$</td>
+<td>$Q = \mathcal{O}$</td>
 </tr>
 <tr>
 <td>Bit 2</td>
 <td>1</td>
-<td>Double: $Q &#x3D; 2\mathcal{O} &#x3D; \mathcal{O}$，Add: $Q &#x3D; \mathcal{O} + P &#x3D; P$</td>
-<td>$Q &#x3D; P$</td>
+<td>Double: $Q = 2\mathcal{O} = \mathcal{O}$，Add: $Q = \mathcal{O} + P = P$</td>
+<td>$Q = P$</td>
 </tr>
 <tr>
 <td>Bit 1</td>
 <td>0</td>
-<td>Double: $Q &#x3D; 2P$，跳过 Add</td>
-<td>$Q &#x3D; 2P$</td>
+<td>Double: $Q = 2P$，跳过 Add</td>
+<td>$Q = 2P$</td>
 </tr>
 <tr>
 <td>Bit 0</td>
 <td>1</td>
-<td>Double: $Q &#x3D; 4P$，Add: $Q &#x3D; 4P + P &#x3D; 5P$</td>
-<td>$Q &#x3D; 5P$</td>
+<td>Double: $Q = 4P$，Add: $Q = 4P + P = 5P$</td>
+<td>$Q = 5P$</td>
 </tr>
 </tbody></table>
 <h2 id="0x04-ECC-侧信道攻击与防御"><a href="#0x04-ECC-侧信道攻击与防御" class="headerlink" title="0x04 ECC 侧信道攻击与防御"></a>0x04 ECC 侧信道攻击与防御</h2><h3 id="标准算法的安全隐患"><a href="#标准算法的安全隐患" class="headerlink" title="标准算法的安全隐患"></a>标准算法的安全隐患</h3><p>标准 Double-and-Add 在现代密码学工程中<strong>禁止直接使用</strong>，缺陷在于执行流的非对称性。</p>
@@ -738,7 +756,7 @@
         
             <li>
                 <strong>Updated at
-                    :</strong> 2026-05-24 14:00:34
+                    :</strong> 2026-05-25 05:25:26
             </li>
         
         <li>
@@ -768,19 +786,19 @@
 			</li>
 			
 			<li class="tag-item mx-0.5">
-				<a href="/tags/%E6%A8%A1%E5%B9%82%E8%BF%90%E7%AE%97/">#模幂运算</a>&nbsp;
-			</li>
-			
-			<li class="tag-item mx-0.5">
-				<a href="/tags/ECC/">#ECC</a>&nbsp;
-			</li>
-			
-			<li class="tag-item mx-0.5">
 				<a href="/tags/%E4%BE%A7%E4%BF%A1%E9%81%93%E6%94%BB%E5%87%BB/">#侧信道攻击</a>&nbsp;
 			</li>
 			
 			<li class="tag-item mx-0.5">
 				<a href="/tags/%E6%81%92%E5%AE%9A%E6%97%B6%E9%97%B4%E7%AE%97%E6%B3%95/">#恒定时间算法</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%A8%A1%E5%B9%82%E8%BF%90%E7%AE%97/">#模幂运算</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/ECC/">#ECC</a>&nbsp;
 			</li>
 			
 		</ul>
@@ -790,6 +808,18 @@
 
 		
 		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/05/25/montgomery-multiplication/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Montgomery 模乘算法与恒定时间防护</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
 			
 			
 			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
@@ -1026,7 +1056,7 @@
 
 
 
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+<script src="/js/build/libs/moment-with-locales.min.js"></script>
 
 
 
