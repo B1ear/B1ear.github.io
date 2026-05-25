@@ -1,7 +1,7 @@
 # BASIC INFORMATION
 info:
   title: B1ear
-  subtitle: ""
+  subtitle: " "
   author: B1ear
   url: https://B1ear.github.io
 
@@ -284,7 +284,10 @@ inject:
   enable: true
   head:
     - "<style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.home-banner-container .description{font-size:3.5rem;text-shadow:2px 2px 8px rgba(0,0,0,0.5)}.home-banner-container .description p i{font-size:1.5rem;text-shadow:1px 1px 4px rgba(0,0,0,0.3)}.home-banner-container .content{margin-bottom:2rem}.home-banner-container [onclick='scrollToMain()']{display:none!important}.scroll-v-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);cursor:pointer;z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .4s ease}.scroll-v-indicator span{display:block;color:rgba(255,255,255,0.9);font-size:1.6rem;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.2);transform:scaleX(3.8);animation:scrollV 1.8s ease-in-out infinite}.scroll-v-indicator span:nth-child(2){animation-delay:.2s}.scroll-v-indicator span:nth-child(3){animation-delay:.4s}@keyframes scrollV{0%,100%{opacity:.2;transform:scaleX(3.8) translateY(0)}50%{opacity:.6;transform:scaleX(3.8) translateY(8px)}}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>"
-    - "<script>document.addEventListener('DOMContentLoaded',function(){document.title=document.title.replace(/ - .*/,'');var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>"
+    - "<script>document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>"
+    - "<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\\\(','\\\\)']],displayMath:[['$$','$$'],['\\\\[','\\\\]']]}}</script>"
+    - "<script src='/js/mathjax/tex-mml-chtml.js'></script>"
+    - "<script>(function(){function typeset(){if(window.MathJax&&MathJax.typesetPromise)window.MathJax.typesetPromise().catch(function(){})}if(window.swup&&window.swup.hooks)window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)});else window.addEventListener('redefine:swup:ready',function(){window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)})});document.addEventListener('DOMContentLoaded',typeset)})()</script>"
   footer:
     -
     -
