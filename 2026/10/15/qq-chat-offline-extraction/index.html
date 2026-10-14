@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="B1ear">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2026/10/15/qq-chat-offline-extraction/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="QQ NT 聊天记录离线提取：从备份格式排查到单会话导出">
+<meta property="og:url" content="http://example.com/2026/10/15/qq-chat-offline-extraction/index.html">
+<meta property="og:site_name" content="B1ear">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-10-15T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T17:46:22.594Z">
+<meta property="article:author" content="B1ear">
+<meta property="article:tag" content="Protobuf">
+<meta property="article:tag" content="QQ NT">
+<meta property="article:tag" content="SQLCipher">
+<meta property="article:tag" content="SQLite">
+<meta property="article:tag" content="实战复盘">
+<meta property="article:tag" content="数据提取">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/avatar.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/avatar.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            QQ NT 聊天记录离线提取：从备份格式排查到单会话导出 | B1ear
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+        
+            
+                
+                    <style>.home-banner-background{filter:blur(5px)}.navbar-content.has-home-banner{--first-text-color:#fffde7;--default-text-color:#fffde7}.home-banner-container .description{font-size:3.5rem;text-shadow:2px 2px 8px rgba(0,0,0,0.5)}.home-banner-container .description p i{font-size:1.5rem;text-shadow:1px 1px 4px rgba(0,0,0,0.3)}.home-banner-container .content{margin-bottom:2rem}.home-banner-container [onclick='scrollToMain()']{display:none!important}.scroll-v-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);cursor:pointer;z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .4s ease}.scroll-v-indicator span{display:block;color:rgba(255,255,255,0.9);font-size:1.6rem;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.2);transform:scaleX(3.8);animation:scrollV 1.8s ease-in-out infinite}.scroll-v-indicator span:nth-child(2){animation-delay:.2s}.scroll-v-indicator span:nth-child(3){animation-delay:.4s}@keyframes scrollV{0%,100%{opacity:.2;transform:scaleX(3.8) translateY(0)}50%{opacity:.6;transform:scaleX(3.8) translateY(8px)}}.article-content.markdown-body h1{font-size:2.5rem!important}.article-content.markdown-body h2{font-size:2.0rem!important}.article-content.markdown-body h3{font-size:1.5rem!important}.article-content.markdown-body h4{font-size:1rem!important}.article-title-regular{font-size:3.0rem!important}.article-title-cover{font-size:3.0rem!important}</style>
+                
+    
+            
+                
+                    <script>document.addEventListener('DOMContentLoaded',function(){var b=document.querySelector('.home-banner-container');if(b){var d=document.createElement('div');d.className='scroll-v-indicator';d.innerHTML='<span>∨</span><span>∨</span><span>∨</span>';d.onclick=function(){scrollToMain()};b.appendChild(d);window.addEventListener('scroll',function(){d.style.opacity=window.scrollY>window.innerHeight*0.3?'0':'1'},{passive:true})}})</script>
+                
+    
+            
+                
+                    <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}}</script>
+                
+    
+            
+                
+                    <script src='/js/mathjax/tex-mml-chtml.js'></script>
+                
+    
+            
+                
+                    <script>(function(){function typeset(){if(window.MathJax&&MathJax.typesetPromise)window.MathJax.typesetPromise().catch(function(){})}if(window.swup&&window.swup.hooks)window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)});else window.addEventListener('redefine:swup:ready',function(){window.swup.hooks.on('content:replace',function(){setTimeout(typeset,100)})});document.addEventListener('DOMContentLoaded',typeset)})()</script>
+                
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":false,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/bg.jpg","dark":"/images/bg.jpg"},"title":"B1ear's Security Blog","subtitle":{"text":["Pwn | Web | Reverse","Binary Exploitation","Security Research","Capture The Flag"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":80,"backing_speed":40,"starting_delay":800,"backing_delay":2000,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/B1ear"},{"icon":"fa-solid fa-at","url":"b1earr@163.com"}],"qrs":[{"icon":"fa-brands fa-weixin","qr":null},{"icon":"/images/custom-icon.svg","qr":null}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1","theme":{"light":"default","dark":"dark"}},"mathjax":{"enable":true}},"version":"2.9.0","navbar":{"auto_hide":false,"color":{"left":"transparent","right":"transparent","transparency":10},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"Tags":{"path":"/tags","icon":"fa-regular fa-tags"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":false,"icon":"<i class=\"fa-solid fa-lollipop\"></i>","start":"","statistics":false,"customize":null,"icp":{"enable":false,"number":null,"url":null}},"footerStart":"","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                B1ear
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags"
+                                        >
+                                    <i class="fa-regular fa-tags fa-fw"></i>
+                                    TAGS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags"
+                        >
+                            <span>
+                                TAGS
+                            </span>
+                            
+                                <i class="fa-regular fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">73</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">5</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">21</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">QQ NT 聊天记录离线提取：从备份格式排查到单会话导出</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/avatar.jpg">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">B1ear</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-10-15</span>
+        <span class="mobile">2026-10-15</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-10-14 17:46:22</span>
+            <span class="mobile">2026-10-14 17:46:22</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/reverse/">reverse</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/QQ-NT/">QQ NT</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/SQLite/">SQLite</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/SQLCipher/">SQLCipher</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Protobuf/">Protobuf</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96/">数据提取</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%AE%9E%E6%88%98%E5%A4%8D%E7%9B%98/">实战复盘</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>实战复盘 | 从官方备份格式排查到原始数据库副本的单会话导出</p>
+</blockquote>
+<p>想把 QQ 中某个联系人的历史消息保存成可以检索、分析的文件，第一反应通常是使用客户端自带的导出功能。我也是从一份官方导出的 <code>.bak</code> 开始排查，先检查容器结构，再尝试开源解密工具，最后在本机原始聊天数据库的副本上完成了单会话提取。</p>
+<p>最终得到三种文件：保留原始字段的 SQLite 数据库、适合程序处理的 JSONL，以及方便直接阅读的文本。本文记录跑通的流程，也保留没有解决的问题：<strong>这次没有解开官方 <code>.bak</code> 内部数据库；成功提取的数据来自同账号的原始 <code>nt_msg.db</code> 副本。</strong></p>
+<p>文中的账号、联系人、UID、密钥、用户目录、聊天时间、精确记录数量及私有文件哈希均已省略。路径和文件名是复现用的通用示例，没有使用真实消息作为样例。</p>
+<h2 id="0x01-先划清几个不同的步骤"><a href="#0x01-先划清几个不同的步骤" class="headerlink" title="0x01 先划清几个不同的步骤"></a>0x01 先划清几个不同的步骤</h2><p>这次工作实际包含三层处理：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">识别文件格式 → 用正确参数解密数据库页 → 解析消息字段中的 Protobuf</span><br></pre></td></tr></table></figure></div>
+
+<p>解开 ZIP 容器，并不意味着其中的数据库已经解密。能读取 SQLite 表结构，也不意味着图片、语音、引用回复等内容已经全部转换成可读文本。</p>
+<p>跑通的主流程如下：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">已有数据库密钥</span><br><span class="line">       ↓</span><br><span class="line">确认同账号原始 nt_msg.db 的位置</span><br><span class="line">       ↓</span><br><span class="line">准备静止、完整的离线副本</span><br><span class="line">       ↓</span><br><span class="line">识别 QQ_NT DB 扩展头，复制并剥离前 1024 字节</span><br><span class="line">       ↓</span><br><span class="line">SQLCipher 只读打开，实际查询 sqlite_master 验证</span><br><span class="line">       ↓</span><br><span class="line">QQ 号与 UID 映射 → 筛选目标私聊记录</span><br><span class="line">       ↓</span><br><span class="line">先保存原始字段到独立 SQLite</span><br><span class="line">       ↓</span><br><span class="line">原仓库解析器 + 有明确字段依据的 wire fallback</span><br><span class="line">       ↓</span><br><span class="line">JSONL / 文本 → 数量、归属、顺序及完整性校验</span><br></pre></td></tr></table></figure></div>
+
+<p>数据库密钥提取需要单独看待。<a class="link"   target="_blank" rel="noopener" href="https://github.com/QQBackup/qq-win-db-key/blob/master/scripts/windows/ntqq/windows_ntqq_get_key.ps1" >qq-win-db-key 的 Windows 脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>会启动 QQ 并附加调试器；之后的副本处理则不需要操作 QQ 进程。因此，只读副本可以减少后续处理对客户端的干预，但不能据此承诺“整套流程零风控风险”。</p>
+<h2 id="0x02-使用到的工具与环境"><a href="#0x02-使用到的工具与环境" class="headerlink" title="0x02 使用到的工具与环境"></a>0x02 使用到的工具与环境</h2><p>以下列出本次涉及的核心工具、依赖与脚本运行环境，链接均指向对应 GitHub 仓库。</p>
+<table>
+<thead>
+<tr>
+<th>工具或组件</th>
+<th>GitHub 仓库</th>
+<th>本次用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>qq-win-db-key</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/QQBackup/qq-win-db-key" >QQBackup&#x2F;qq-win-db-key<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>提取同账号原始数据库的密钥，并核对提取脚本行为</td>
+</tr>
+<tr>
+<td>nt_msg_db_util</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/QQBackup/nt_msg_db_util" >QQBackup&#x2F;nt_msg_db_util<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>主要参考实现；采用解密参数、消息解析器和字段定义</td>
+</tr>
+<tr>
+<td>ntdb_unwrap</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/artiga033/ntdb_unwrap" >artiga033&#x2F;ntdb_unwrap<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>实际运行的备用解密工具，用于交叉验证</td>
+</tr>
+<tr>
+<td>sqlcipher3</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/coleifer/sqlcipher3" >coleifer&#x2F;sqlcipher3<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>SQLCipher 的 Python 绑定，用于读取加密数据库副本</td>
+</tr>
+<tr>
+<td>SQLCipher</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/sqlcipher/sqlcipher" >sqlcipher&#x2F;sqlcipher<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>底层数据库加密引擎，通过 Python 绑定及备用工具使用</td>
+</tr>
+<tr>
+<td>Protocol Buffers</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/protocolbuffers/protobuf" >protocolbuffers&#x2F;protobuf<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>Python <code>protobuf</code> runtime，解析消息正文</td>
+</tr>
+<tr>
+<td>python-dotenv</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/theskumar/python-dotenv" >theskumar&#x2F;python-dotenv<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>原始 <code>1.decrypt.py</code> 的导入依赖；本次禁用 <code>.env</code> 自动加载，未用它保存密钥</td>
+</tr>
+<tr>
+<td>Python &#x2F; CPython</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/python/cpython" >python&#x2F;cpython<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>执行处理脚本；标准库 <code>zipfile</code> 读取容器，<code>sqlite3</code> 写入明文库，<code>hashlib</code> 校验文件</td>
+</tr>
+<tr>
+<td>SQLite</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/sqlite/sqlite" >sqlite&#x2F;sqlite<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>明文导出数据库引擎；该链接是 SQLite 的官方 GitHub 镜像</td>
+</tr>
+<tr>
+<td>PowerShell</td>
+<td><a class="link"   target="_blank" rel="noopener" href="https://github.com/PowerShell/PowerShell" >PowerShell&#x2F;PowerShell<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></td>
+<td>Windows 下执行脚本与文件操作；此仓库对应开源 PowerShell，Windows PowerShell 5.1 是不同版本线</td>
+</tr>
+</tbody></table>
+<p>另外参考了 <a class="link"   target="_blank" rel="noopener" href="https://github.com/QQBackup/QQDecrypt" >QQBackup&#x2F;QQDecrypt<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> 的数据库提取与解密教程。它属于参考文档，没有作为另一个独立解密程序运行。<code>zipfile</code>、<code>sqlite3</code>、<code>hashlib</code>、<code>getpass</code> 等属于 Python 标准库，无需各自寻找第三方仓库。</p>
+<p>实测最小处理链使用 Python 3.13、<code>sqlcipher3==0.6.4</code> 和 <code>protobuf==7.34.1</code>；SQLCipher 引擎报告的版本为 4.19.0，备用程序报告的版本为 0.3.3。这些版本描述的是本次实验环境，不代表其他 QQ 版本、数据库格式或未来仓库版本均兼容。</p>
+<p>当时上游项目的 <code>pyproject.toml</code> 声明 Python ≥ 3.14；这里直接调用了其中可在 Python 3.13 运行的解密和解析模块。使用完整上游项目时，应遵循其自己的运行环境要求。</p>
+<p>复现时可以建立独立目录：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">qq-lab/</span><br><span class="line">├── QQ聊天记录离线提取实践.md    # 可公开的文章</span><br><span class="line">├── qq_chat_export_example.py  # 可公开的通用示例代码</span><br><span class="line">├── .venv/</span><br><span class="line">├── sources/</span><br><span class="line">│   └── nt_msg_db_util/</span><br><span class="line">└── private_work/              # 数据、密钥相关操作和导出结果只留在本地</span><br><span class="line">    ├── export.bak</span><br><span class="line">    ├── snapshot/</span><br><span class="line">    │   └── nt_msg.db</span><br><span class="line">    └── selected_chat/</span><br></pre></td></tr></table></figure></div>
+
+<p>下面是准备依赖的 PowerShell 命令。示例代码使用本地检出的上游 <code>msgdb</code> 模块，不要求把整个上游项目安装进 Python 环境。</p>
+<div class="code-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python <span class="literal">-m</span> venv .venv</span><br><span class="line">&amp; .\.venv\Scripts\python.exe <span class="literal">-m</span> pip install sqlcipher3==<span class="number">0.6</span>.<span class="number">4</span> protobuf==<span class="number">7.34</span>.<span class="number">1</span></span><br><span class="line">git clone https://github.com/QQBackup/nt_msg_db_util.git .\sources\nt_msg_db_util</span><br><span class="line">git <span class="literal">-C</span> .\sources\nt_msg_db_util rev<span class="literal">-parse</span> HEAD</span><br></pre></td></tr></table></figure></div>
+
+<p>最后一行用于记录自己拿到的源码版本。若后续更新源码，应重新核对参数、表结构和生成的 Protobuf 代码，不能只沿用旧依赖版本。</p>
+<h2 id="0x03-密钥提取成功，仍然需要验证"><a href="#0x03-密钥提取成功，仍然需要验证" class="headerlink" title="0x03 密钥提取成功，仍然需要验证"></a>0x03 密钥提取成功，仍然需要验证</h2><p>本次已有一份通过上游脚本提取的密钥。核对脚本后发现，它会读取目标函数参数中的字符串，在找到符合格式的 16 字节可打印 ASCII 字符串后结束提取；这一步本身没有通过打开目标数据库来验证密钥。</p>
+<p>因此，日志中的“找到密钥”只能作为后续验证的输入。</p>
+<p>如果需要从头准备，可以先从上游下载并检查脚本，再在自己的 QQ 环境中执行。不要把取得的真实密钥或完整调试日志粘贴到文章里：</p>
+<div class="code-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> .\private_work | <span class="built_in">Out-Null</span></span><br><span class="line"><span class="built_in">Invoke-WebRequest</span> `</span><br><span class="line">  <span class="literal">-Uri</span> <span class="string">&#x27;https://raw.githubusercontent.com/QQBackup/qq-win-db-key/master/scripts/windows/ntqq/windows_ntqq_get_key.ps1&#x27;</span> `</span><br><span class="line">  <span class="literal">-OutFile</span> .\private_work\windows_ntqq_get_key.ps1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查脚本后，在需要提取密钥的环境中运行：</span></span><br><span class="line">&amp; .\private_work\windows_ntqq_get_key.ps1</span><br></pre></td></tr></table></figure></div>
+
+<p>密钥里可能包含分号、百分号、尖括号等字符。Markdown 转义符与密钥本身要分清，也不要让 shell 再解释这些字符。本文配套示例通过 Python 的 <code>getpass.getpass()</code> 隐藏输入，不把密钥写入源码、命令行参数或输出报告。</p>
+<h2 id="0x04-bak-的第一层只是容器"><a href="#0x04-bak-的第一层只是容器" class="headerlink" title="0x04 .bak 的第一层只是容器"></a>0x04 <code>.bak</code> 的第一层只是容器</h2><p>这次样本可以由 Python <code>zipfile</code> 打开，里面有 <code>db/</code> 与 <code>files/</code> 两类条目。先读取数据库条目的前 1024 字节，就能获得很有用的判断依据，无须立即解出所有附件。</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"></span><br><span class="line">backup = Path(<span class="string">&#x27;private_work/export.bak&#x27;</span>)</span><br><span class="line"><span class="keyword">with</span> zipfile.ZipFile(backup, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> archive:</span><br><span class="line">    <span class="keyword">for</span> index, entry <span class="keyword">in</span> <span class="built_in">enumerate</span>(</span><br><span class="line">        item <span class="keyword">for</span> item <span class="keyword">in</span> archive.infolist()</span><br><span class="line">        <span class="keyword">if</span> item.filename.startswith(<span class="string">&#x27;db/&#x27;</span>) <span class="keyword">and</span> <span class="keyword">not</span> item.is_dir()</span><br><span class="line">    ):</span><br><span class="line">        <span class="keyword">with</span> archive.<span class="built_in">open</span>(entry) <span class="keyword">as</span> stream:</span><br><span class="line">            header = stream.read(<span class="number">1024</span>)</span><br><span class="line">        <span class="comment"># 只显示格式标记，不展示条目名称、密钥元数据或完整十六进制内容。</span></span><br><span class="line">        <span class="built_in">print</span>(index, header[:<span class="number">16</span>], header[<span class="number">32</span>:<span class="number">40</span>])</span><br></pre></td></tr></table></figure></div>
+
+<p>这份备份中的数据库有两个特征：文件前缀为 <code>SQLite header 3</code>，偏移 32 处为 <code>MSG0</code>。后面找到的本机原始库在相同位置则是 <code>QQ_NT DB</code>。</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>这次观察到的结构</th>
+<th>处理结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方 <code>.bak</code></td>
+<td>ZIP64 容器，内部数据库带 <code>MSG0</code> 标记</td>
+<td>可以读取容器；内部数据库解密未成功</td>
+</tr>
+<tr>
+<td>本机 <code>nt_msg.db</code></td>
+<td>扩展头中带 <code>QQ_NT DB</code> 标记</td>
+<td>提供的密钥和原仓库参数可以读取</td>
+</tr>
+<tr>
+<td>剥离扩展头的副本</td>
+<td>开头仍是加密数据</td>
+<td>需要 SQLCipher，不能直接当普通 SQLite 打开</td>
+</tr>
+</tbody></table>
+<p>这些是本次样本的实测结果，不应推广为所有 QQ <code>.bak</code> 的固定规范。共同的 <code>SQLite header 3</code> 前缀也不足以证明它们使用同一种密钥或同一套参数。</p>
+<p>读取前缀只能做格式探测。若要验证整个 ZIP 条目的 CRC，必须将该条目读到 EOF；这次对实际完整解包的数据库副本做了这一检查。</p>
+<h2 id="0x05-先验证工具，再判断密钥是否匹配"><a href="#0x05-先验证工具，再判断密钥是否匹配" class="headerlink" title="0x05 先验证工具，再判断密钥是否匹配"></a>0x05 先验证工具，再判断密钥是否匹配</h2><p>最初按 <code>nt_msg_db_util</code> 的流程剥离扩展头并尝试读取备份库，出现了以下错误：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hmac check failed for pgno=1</span><br><span class="line">file is not a database</span><br></pre></td></tr></table></figure></div>
+
+<p>这些错误并不能直接证明账号密钥提取失败。密钥、起始偏移、页大小、KDF 参数、HMAC 算法或输入文件格式不匹配，都可能让第一页读取失败。</p>
+<p>这次做了三类对照：</p>
+<ol>
+<li>使用相同 SQLCipher 参数生成只含合成数据的小数据库，再用原方法读回，确认依赖与基本流程能工作。</li>
+<li>尝试原仓库配置、SQLCipher 兼容配置及备用工具支持的 HMAC 变体，检查备份库是否能读取表结构。</li>
+<li>找到同账号本机的 <code>settings.db</code> 与 <code>nt_msg.db</code>，在副本上验证同一密钥。</li>
+</ol>
+<p>第三步提供了关键证据：设置库可以读取，完整聊天库副本也可以读取表结构和消息。于是可以确认密钥对本机原始库有效，同时保留更窄的失败结论：<strong>这把密钥与已测试的参数，未能打开此次 <code>.bak</code> 中的数据库。</strong></p>
+<p>另外，聊天库的截取样本曾报 <code>database disk image is malformed</code>，完整副本却能读取表结构。小样本可以用于初筛，但数据库可能引用样本之外的页，不能用这种错误单独认定原库损坏。</p>
+<h2 id="0x06-备用工具怎样参与排查"><a href="#0x06-备用工具怎样参与排查" class="headerlink" title="0x06 备用工具怎样参与排查"></a>0x06 备用工具怎样参与排查</h2><p>在前一种方法无法打开备份库后，又检查了 <code>ntdb_unwrap</code> 的命令行帮助和源码，并采用显式文件、显式密钥的导出模式交叉验证。</p>
+<div class="code-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.\ntdb_unwrap.exe <span class="literal">--version</span></span><br><span class="line">.\ntdb_unwrap.exe export <span class="literal">--help</span></span><br></pre></td></tr></table></figure></div>
+
+<p>参数形式如下，尖括号中的内容只是说明占位符：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ntdb_unwrap.exe export &quot;&lt;DATABASE_COPY&gt;&quot; --pkey &quot;&lt;DB_KEY&gt;&quot; --output &quot;&lt;NEW_OUTPUT_DB&gt;&quot;</span><br></pre></td></tr></table></figure></div>
+
+<p>该版本在不提供密钥时会尝试自动提取；Windows 下这会进入启动 QQ 和调试进程的路径。显式指定 <code>--pkey</code> 后才是这里需要的手动密钥模式。默认还会复制输入文件到临时文件，本次保留了复制行为，没有启用 <code>--nocopy</code>。</p>
+<p>实际调用通过 Python 子进程参数列表传入密钥，保存日志前替换掉密钥内容。命令行参数仍可能被本机进程查看工具看到，所以这与主流程中的隐藏输入方式并不完全等价。</p>
+<p>备用工具对备份库也报第一页 HMAC 校验失败；对同账号设置库副本则可以成功导出。两种工具的对照进一步说明，应优先检查输入文件的格式与适用范围。</p>
+<h2 id="0x07-找到原始库，并准备稳定副本"><a href="#0x07-找到原始库，并准备稳定副本" class="headerlink" title="0x07 找到原始库，并准备稳定副本"></a>0x07 找到原始库，并准备稳定副本</h2><p>Windows 上常见的原始库位置是：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;QQ_DATA_ROOT&gt;\&lt;ACCOUNT&gt;\nt_qq\nt_db\nt_msg.db</span><br></pre></td></tr></table></figure></div>
+
+<p>实际数据根目录可能被用户改到其他磁盘，不能只查默认“文档”目录。应通过 QQ 的数据目录设置，或在已知 QQ 数据目录中查找。</p>
+<p>复制前正常退出客户端，使数据库处于静止状态。如果存在尚未合并的非空 <code>nt_msg.db-wal</code>，单独复制主库可能缺少已提交记录；需要先取得一致的快照，再使用后续流程。仅比较文件大小和修改时间，不能证明一个正在写入的数据库副本具有事务一致性。</p>
+<div class="code-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$sourceDb</span> = <span class="built_in">Read-Host</span> <span class="string">&#x27;输入原始 nt_msg.db 的完整路径&#x27;</span></span><br><span class="line"><span class="variable">$sourceWal</span> = <span class="variable">$sourceDb</span> + <span class="string">&#x27;-wal&#x27;</span></span><br><span class="line"><span class="keyword">if</span> ((<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> <span class="variable">$sourceWal</span>) <span class="operator">-and</span></span><br><span class="line">    (<span class="built_in">Get-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$sourceWal</span>).Length <span class="operator">-gt</span> <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="string">&#x27;原库旁仍有非空 WAL，请先准备一致的数据库快照&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">New-Item</span> <span class="literal">-ItemType</span> Directory <span class="literal">-Force</span> .\private_work\snapshot | <span class="built_in">Out-Null</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="literal">-LiteralPath</span> .\private_work\snapshot\nt_msg.db) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="string">&#x27;快照已存在，请使用新的私有工作目录&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Copy-Item</span> <span class="literal">-LiteralPath</span> <span class="variable">$sourceDb</span> <span class="literal">-Destination</span> .\private_work\snapshot\nt_msg.db</span><br><span class="line"></span><br><span class="line"><span class="variable">$sourceHash</span> = (<span class="built_in">Get-FileHash</span> <span class="literal">-LiteralPath</span> <span class="variable">$sourceDb</span> <span class="literal">-Algorithm</span> SHA256).Hash</span><br><span class="line"><span class="variable">$copyHash</span> = (<span class="built_in">Get-FileHash</span> <span class="literal">-LiteralPath</span> .\private_work\snapshot\nt_msg.db <span class="literal">-Algorithm</span> SHA256).Hash</span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$sourceHash</span> <span class="operator">-ne</span> <span class="variable">$copyHash</span>) &#123; <span class="keyword">throw</span> <span class="string">&#x27;源文件与副本不一致，请重新准备静止副本&#x27;</span> &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>后续全部操作都指向 <code>private_work/snapshot/nt_msg.db</code>。配套示例还会再生成剥离扩展头的工作文件，避免修改输入快照。示例只能检测输入快照旁的 WAL，无法发现复制时已经遗漏的原库 WAL，因此前面的快照准备不能省略。</p>
+<h2 id="0x08-剥离扩展头，再实际触发一次解密"><a href="#0x08-剥离扩展头，再实际触发一次解密" class="headerlink" title="0x08 剥离扩展头，再实际触发一次解密"></a>0x08 剥离扩展头，再实际触发一次解密</h2><p>对已确认的原始 NTQQ 库，本次使用 1024 字节扩展头长度、4096 字节页大小，以及下面这组参数。</p>
+<div class="code-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path</span><br><span class="line"><span class="keyword">import</span> sqlcipher3.dbapi2 <span class="keyword">as</span> sc</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">open_payload</span>(<span class="params">payload: Path, key: <span class="built_in">str</span></span>):</span><br><span class="line">    uri = payload.resolve().as_uri() + <span class="string">&#x27;?mode=ro&amp;immutable=1&#x27;</span></span><br><span class="line">    conn = sc.connect(uri, uri=<span class="literal">True</span>)</span><br><span class="line">    conn.execute(<span class="string">&#x27;PRAGMA cipher_page_size=4096&#x27;</span>)</span><br><span class="line">    conn.execute(<span class="string">&quot;PRAGMA key=&#x27;&quot;</span> + key.replace(<span class="string">&quot;&#x27;&quot;</span>, <span class="string">&quot;&#x27;&#x27;&quot;</span>) + <span class="string">&quot;&#x27;&quot;</span>)</span><br><span class="line">    conn.execute(<span class="string">&#x27;PRAGMA kdf_iter=4000&#x27;</span>)</span><br><span class="line">    conn.execute(<span class="string">&#x27;PRAGMA cipher_hmac_algorithm=HMAC_SHA1&#x27;</span>)</span><br><span class="line">    conn.execute(<span class="string">&#x27;PRAGMA cipher_kdf_algorithm=PBKDF2_HMAC_SHA512&#x27;</span>)</span><br><span class="line">    conn.execute(<span class="string">&#x27;SELECT count(*) FROM sqlite_master&#x27;</span>).fetchone()</span><br><span class="line">    <span class="keyword">return</span> conn</span><br></pre></td></tr></table></figure></div>
+
+<p>这里沿用实测成功的参数顺序，不把 SQLCipher 的默认参数当作 NTQQ 参数。<code>connect()</code> 返回连接，并不代表密钥验证通过；真正访问 <code>sqlite_master</code> 才会触发数据库页读取。<a class="link"   target="_blank" rel="noopener" href="https://www.zetetic.net/sqlcipher/sqlcipher-api/" >SQLCipher API 文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>说明了密钥设置、参数配置与校验接口的行为。</p>
+<p><code>mode=ro</code> 表示只读；<code>immutable=1</code> 额外告诉 SQLite 文件不会改变，并省略部分锁与变化检测。它只适用于已经固定的离线副本，不能把一个仍在写入的文件“变成”安全快照。<a class="link"   target="_blank" rel="noopener" href="https://sqlite.org/uri.html" >SQLite URI 文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>对此有明确说明。</p>
+<p>剥离扩展头后，文件依然加密。为了避免名字造成误解，示例将它命名为 <code>source_payload.encrypted.db</code>，把真正导出的明文单会话库命名为 <code>chat_raw.sqlite</code>。</p>
+<h2 id="0x09-按会话筛选：同时考虑-QQ-号和-UID"><a href="#0x09-按会话筛选：同时考虑-QQ-号和-UID" class="headerlink" title="0x09 按会话筛选：同时考虑 QQ 号和 UID"></a>0x09 按会话筛选：同时考虑 QQ 号和 UID</h2><p>读取表结构后，本次目标涉及以下几张表：</p>
+<table>
+<thead>
+<tr>
+<th>表</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>c2c_msg_table</code></td>
+<td>私聊消息</td>
+</tr>
+<tr>
+<td><code>c2c_temp_msg_table</code></td>
+<td>临时私聊消息，单独检查是否有目标记录</td>
+</tr>
+<tr>
+<td><code>nt_uid_mapping_table</code></td>
+<td>将数字 QQ 号与库中的 UID 表示关联</td>
+</tr>
+</tbody></table>
+<p>关键字段如下。解释依据是本次读取结果及上游字段定义，其他版本应先核对实际 schema。</p>
+<table>
+<thead>
+<tr>
+<th>字段号</th>
+<th>本次用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>40001</code></td>
+<td>消息 ID</td>
+</tr>
+<tr>
+<td><code>40050</code></td>
+<td>时间戳</td>
+</tr>
+<tr>
+<td><code>40013</code></td>
+<td>方向字段</td>
+</tr>
+<tr>
+<td><code>40020</code> &#x2F; <code>40033</code></td>
+<td>发送者 UID &#x2F; QQ 号</td>
+</tr>
+<tr>
+<td><code>40021</code> &#x2F; <code>40030</code></td>
+<td>会话对象 UID &#x2F; QQ 号</td>
+</tr>
+<tr>
+<td><code>40011</code></td>
+<td>消息类型</td>
+</tr>
+<tr>
+<td><code>40800</code></td>
+<td>消息正文 Protobuf BLOB</td>
+</tr>
+</tbody></table>
+<p>先查询 <code>nt_uid_mapping_table</code> 中目标 QQ 号对应的映射，再构造参数化条件：</p>
+<div class="code-container" data-rel="Sql"><figure class="iseeu highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WHERE</span> [<span class="number">40030</span>] <span class="operator">=</span> ?</span><br><span class="line">   <span class="keyword">OR</span> [<span class="number">40021</span>] <span class="keyword">IN</span> (?, ...)</span><br></pre></td></tr></table></figure></div>
+
+<p>这里的 <code>...</code> 表示按 UID 候选数量生成占位符，并不是直接执行的 SQL。筛选目标是“与这个联系人的会话”，因此使用会话对象字段。仅按发送者筛选，会把自己发给对方的消息遗漏。</p>
+<p>复制时使用完整原始行，保留未知列和 BLOB；之后再生成解释过的 JSON。这样即使当前解析器不能处理某种消息，也不必重新访问原始账号数据库。</p>
+<h2 id="0x0A-Protobuf-解析：成功、回退与未解释数据都要保留"><a href="#0x0A-Protobuf-解析：成功、回退与未解释数据都要保留" class="headerlink" title="0x0A Protobuf 解析：成功、回退与未解释数据都要保留"></a>0x0A Protobuf 解析：成功、回退与未解释数据都要保留</h2><p>本次复用了上游 <code>msgdb.c2c.parser.parse_row()</code> 与 <code>parse_40800()</code>。加载模块时遇到过一个独立于数据库的问题：系统中已有的 Protobuf runtime 与仓库生成代码的版本不匹配。</p>
+<p>处理方法是查看生成文件中的 <code>Protobuf Python Version</code> 和版本检查代码，然后在隔离环境中安装匹配版本。这次生成代码使用 7.34.1；没有通过删除版本检查来绕开错误。</p>
+<p>消息解析也不是非成功即失败。输出中保留以下状态：</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>typed</code></td>
+<td>可按当前 Protobuf 模型解析，不等于所有业务字段均已解释</td>
+</tr>
+<tr>
+<td><code>wire_fallback</code></td>
+<td>模型解析失败，但底层 wire 结构仍可读取</td>
+</tr>
+<tr>
+<td><code>invalid</code></td>
+<td>模型和基础 wire 解析均失败</td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>没有正文 BLOB</td>
+</tr>
+<tr>
+<td><code>parser_error</code></td>
+<td>后续内容转换发生异常，原始记录仍保留</td>
+</tr>
+</tbody></table>
+<p>对进入 fallback 的记录继续检查，发现了图片和图文消息。按上游已定义的字段号，可以恢复部分信息：</p>
+<table>
+<thead>
+<tr>
+<th>Protobuf 字段号</th>
+<th>本次读取的信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>40800</code></td>
+<td>外层重复消息段</td>
+</tr>
+<tr>
+<td><code>45002</code></td>
+<td>段内容类型</td>
+</tr>
+<tr>
+<td><code>45101</code></td>
+<td>UTF-8 文本</td>
+</tr>
+<tr>
+<td><code>45402</code></td>
+<td>文件名</td>
+</tr>
+<tr>
+<td><code>45405</code> &#x2F; <code>45406</code></td>
+<td>文件大小 &#x2F; 摘要字节</td>
+</tr>
+<tr>
+<td><code>45411</code> &#x2F; <code>45412</code></td>
+<td>图片宽高</td>
+</tr>
+<tr>
+<td><code>45812</code></td>
+<td>本地路径</td>
+</tr>
+</tbody></table>
+<p>补充解析只解释有依据的字段。文本采用严格 UTF-8 解码，失败就保持未知，不使用 <code>errors=&#39;ignore&#39;</code> 静默丢字，也不猜测所有二进制字段都是文本。完整 BLOB 在原始单会话库中保留，示例的 fallback JSON 还保存正文十六进制，供将来重新解析。</p>
+<p>这些补充结果继续标记为部分解析，不计为模型解析成功。图片元数据和本地路径也不等于图片本身；本文流程没有下载或复制附件。</p>
+<h2 id="0x0B-用通用示例执行完整导出"><a href="#0x0B-用通用示例执行完整导出" class="headerlink" title="0x0B 用通用示例执行完整导出"></a>0x0B 用通用示例执行完整导出</h2><p>配套的 <a href="/downloads/code/qq-chat-offline-extraction/qq_chat_export_example.py">qq_chat_export_example.py</a> 将上述步骤整理成一个通用脚本，没有写入实际账号、密钥或本机绝对路径。</p>
+<p>准备好完整原始库快照和上游源码后运行：</p>
+<div class="code-container" data-rel="Powershell"><figure class="iseeu highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&amp; .\.venv\Scripts\python.exe .\qq_chat_export_example.py `</span><br><span class="line">  <span class="literal">--db</span> .\private_work\snapshot\nt_msg.db `</span><br><span class="line">  <span class="literal">--upstream</span> .\sources\nt_msg_db_util `</span><br><span class="line">  <span class="literal">--out</span> .\private_work\selected_chat</span><br></pre></td></tr></table></figure></div>
+
+<p>脚本会询问目标联系人 QQ 号，并隐藏输入数据库密钥。输出目录必须尚不存在，防止把这次结果混入上次导出。</p>
+<p>它只接受带 <code>QQ_NT DB</code> 标记的原始库快照，不会把 <code>MSG0</code> 备份当成支持的输入。示例遇到数据库读取错误会停止并记录失败，不会静默跳过数据；消息内容解析失败则保留原始行，并记录对应解析状态。</p>
+<p>输出文件的职责分别是：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>source_payload.encrypted.db</code></td>
+<td>剥离扩展头后的加密工作副本</td>
+</tr>
+<tr>
+<td><code>chat_raw.sqlite</code></td>
+<td>目标私聊原始记录和目标 UID 映射</td>
+</tr>
+<tr>
+<td><code>messages.jsonl</code></td>
+<td>每行一条消息，包含时间、来源表、解析状态和可解释内容</td>
+</tr>
+<tr>
+<td><code>chat.txt</code></td>
+<td>按时间排列的阅读版本，非文本内容以类型提示</td>
+</tr>
+<tr>
+<td><code>export_report.json</code></td>
+<td>完成状态、数量、解析统计、输出校验和文件哈希</td>
+</tr>
+</tbody></table>
+<p>这个公开示例整理自实测处理逻辑，并以合成数据验证；它没有再次访问真实账号数据库。上游字段定义变化时，示例也需要相应调整。它不实现群聊导出、附件归档或 <code>.bak</code> 专用解密。</p>
+<h2 id="0x0C-怎样确认导出结果可用"><a href="#0x0C-怎样确认导出结果可用" class="headerlink" title="0x0C 怎样确认导出结果可用"></a>0x0C 怎样确认导出结果可用</h2><p>这次校验重点放在数据关系，而不只看程序是否退出成功：</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">副本中匹配的记录数 = 单会话 SQLite 记录数 = JSONL 消息数</span><br><span class="line">导出数据库 integrity_check = ok</span><br><span class="line">目标 QQ 号冲突数 = 0</span><br><span class="line">按时间戳、消息 ID 排序的检查 = 通过</span><br><span class="line">输入快照导出前后保持一致</span><br></pre></td></tr></table></figure></div>
+
+<p>原始表中的消息 ID、时间和 BLOB 都保留在单会话库中。解析不完整的记录不会因为缺少 <code>text</code> 就从结果中消失，JSON 仍然包含该条记录及状态。</p>
+<p>三个不同层次的数量也要区分：记录数、包含文字的记录数、完整解释所有业务字段的记录数，不能互相替代。</p>
+<h2 id="0x0D-整库检查仍有一处未解决的问题"><a href="#0x0D-整库检查仍有一处未解决的问题" class="headerlink" title="0x0D 整库检查仍有一处未解决的问题"></a>0x0D 整库检查仍有一处未解决的问题</h2><p>完整加密副本曾在约 1 GiB 附近的一页报 HMAC 异常，检查发现该页全零；整库 <code>quick_check</code> 也没有通过。</p>
+<p>SQLite 文件格式确实有锁字节页这一特殊区域，约在 1 GiB 位置，但仅凭位置相近不足以确定这里的异常就是锁页行为。扩展头、QQ 自身实现和工具兼容性也可能影响解释。<a class="link"   target="_blank" rel="noopener" href="https://sqlite.org/fileformat2.html#the_lock_byte_page" >SQLite 文件格式文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>可以作为进一步分析的依据，本次没有得出确定原因。</p>
+<p>因此，不能将“目标会话导出成功”写成“整个原始数据库完好”。本次能确认的范围是：选定会话的匹配记录全部读出，复制时没有跳过行，重新生成的单会话数据库通过完整性检查。</p>
+<p>也没有为了让检查变绿而删除全零页、关闭 HMAC 校验，或修改 QQ 的原始数据库。</p>
+<h2 id="0x0E-这次排查得到的结论"><a href="#0x0E-这次排查得到的结论" class="headerlink" title="0x0E 这次排查得到的结论"></a>0x0E 这次排查得到的结论</h2><table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>本次结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>官方备份容器能否读取</td>
+<td>可以</td>
+</tr>
+<tr>
+<td>官方备份内部库能否用已知方法解密</td>
+<td>未成功，具体差异尚未查明</td>
+</tr>
+<tr>
+<td>提供的密钥对本机原始库是否有效</td>
+<td>有效，已通过实际数据库读取验证</td>
+</tr>
+<tr>
+<td>目标会话能否从原始库副本提取</td>
+<td>可以，匹配数量与输出数量一致</td>
+</tr>
+<tr>
+<td>单会话导出数据库是否通过完整性检查</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>是否所有消息类型都完整解释</td>
+<td>没有；保留了未知字段与解析状态</td>
+</tr>
+<tr>
+<td>是否完成附件归档</td>
+<td>没有，本次只处理数据库与元数据</td>
+</tr>
+<tr>
+<td>是否能保证所有版本适用、零风控</td>
+<td>不能作这样的保证</td>
+</tr>
+</tbody></table>
+<p>这次能继续推进，关键在于把“容器能读取”“密钥能打开原始库”“消息字段能解析”分别验证。对目标会话先做完整字段复制，再生成阅读版本，也让解析器的能力边界不会变成原始记录的丢失。</p>
+<h2 id="0x0F-公开本文时的文件范围"><a href="#0x0F-公开本文时的文件范围" class="headerlink" title="0x0F 公开本文时的文件范围"></a>0x0F 公开本文时的文件范围</h2><p>可公开的材料只有本文和通用示例代码。<code>private_work/</code>、实际脚本配置、数据库、JSONL、聊天文本、运行报告及调试日志都属于私有材料。</p>
+<p>特别是 JSON 中的 UID、发送者、消息时间、图片文件名、本地路径和媒体 URL，以及 BLOB 的十六进制表示，都可能包含个人信息。把二进制转成十六进制不是匿名化；记录精确数量、时间范围和私有文件哈希也没有出现在这份公开稿中。</p>
+<p>文中保留的都是格式标记、算法参数、字段编号、通用代码与公开项目链接，可将它们和自己的私有导出数据分开维护。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> QQ NT 聊天记录离线提取：从备份格式排查到单会话导出</li>
+        <li><strong>Author:</strong> B1ear</li>
+        <li><strong>Created at
+                :</strong> 2026-10-15 00:00:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-10-14 17:46:22
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://b1ear.github.io/2026/10/15/qq-chat-offline-extraction/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/QQ-NT/">#QQ NT</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/SQLite/">#SQLite</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/SQLCipher/">#SQLCipher</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Protobuf/">#Protobuf</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E6%95%B0%E6%8D%AE%E6%8F%90%E5%8F%96/">#数据提取</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/%E5%AE%9E%E6%88%98%E5%A4%8D%E7%9B%98/">#实战复盘</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/05/26/electron-to-pywebview/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Vue 3 + Flask 项目桌面化打包实战：从 Electron 到 PyWebview 的踩坑之路</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">QQ NT 聊天记录离线提取：从备份格式排查到单会话导出</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-%E5%85%88%E5%88%92%E6%B8%85%E5%87%A0%E4%B8%AA%E4%B8%8D%E5%90%8C%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-text">0x01 先划清几个不同的步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E5%B7%A5%E5%85%B7%E4%B8%8E%E7%8E%AF%E5%A2%83"><span class="nav-text">0x02 使用到的工具与环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-%E5%AF%86%E9%92%A5%E6%8F%90%E5%8F%96%E6%88%90%E5%8A%9F%EF%BC%8C%E4%BB%8D%E7%84%B6%E9%9C%80%E8%A6%81%E9%AA%8C%E8%AF%81"><span class="nav-text">0x03 密钥提取成功，仍然需要验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-bak-%E7%9A%84%E7%AC%AC%E4%B8%80%E5%B1%82%E5%8F%AA%E6%98%AF%E5%AE%B9%E5%99%A8"><span class="nav-text">0x04 .bak 的第一层只是容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-%E5%85%88%E9%AA%8C%E8%AF%81%E5%B7%A5%E5%85%B7%EF%BC%8C%E5%86%8D%E5%88%A4%E6%96%AD%E5%AF%86%E9%92%A5%E6%98%AF%E5%90%A6%E5%8C%B9%E9%85%8D"><span class="nav-text">0x05 先验证工具，再判断密钥是否匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-%E5%A4%87%E7%94%A8%E5%B7%A5%E5%85%B7%E6%80%8E%E6%A0%B7%E5%8F%82%E4%B8%8E%E6%8E%92%E6%9F%A5"><span class="nav-text">0x06 备用工具怎样参与排查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07-%E6%89%BE%E5%88%B0%E5%8E%9F%E5%A7%8B%E5%BA%93%EF%BC%8C%E5%B9%B6%E5%87%86%E5%A4%87%E7%A8%B3%E5%AE%9A%E5%89%AF%E6%9C%AC"><span class="nav-text">0x07 找到原始库，并准备稳定副本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-%E5%89%A5%E7%A6%BB%E6%89%A9%E5%B1%95%E5%A4%B4%EF%BC%8C%E5%86%8D%E5%AE%9E%E9%99%85%E8%A7%A6%E5%8F%91%E4%B8%80%E6%AC%A1%E8%A7%A3%E5%AF%86"><span class="nav-text">0x08 剥离扩展头，再实际触发一次解密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09-%E6%8C%89%E4%BC%9A%E8%AF%9D%E7%AD%9B%E9%80%89%EF%BC%9A%E5%90%8C%E6%97%B6%E8%80%83%E8%99%91-QQ-%E5%8F%B7%E5%92%8C-UID"><span class="nav-text">0x09 按会话筛选：同时考虑 QQ 号和 UID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0A-Protobuf-%E8%A7%A3%E6%9E%90%EF%BC%9A%E6%88%90%E5%8A%9F%E3%80%81%E5%9B%9E%E9%80%80%E4%B8%8E%E6%9C%AA%E8%A7%A3%E9%87%8A%E6%95%B0%E6%8D%AE%E9%83%BD%E8%A6%81%E4%BF%9D%E7%95%99"><span class="nav-text">0x0A Protobuf 解析：成功、回退与未解释数据都要保留</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0B-%E7%94%A8%E9%80%9A%E7%94%A8%E7%A4%BA%E4%BE%8B%E6%89%A7%E8%A1%8C%E5%AE%8C%E6%95%B4%E5%AF%BC%E5%87%BA"><span class="nav-text">0x0B 用通用示例执行完整导出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0C-%E6%80%8E%E6%A0%B7%E7%A1%AE%E8%AE%A4%E5%AF%BC%E5%87%BA%E7%BB%93%E6%9E%9C%E5%8F%AF%E7%94%A8"><span class="nav-text">0x0C 怎样确认导出结果可用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0D-%E6%95%B4%E5%BA%93%E6%A3%80%E6%9F%A5%E4%BB%8D%E6%9C%89%E4%B8%80%E5%A4%84%E6%9C%AA%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">0x0D 整库检查仍有一处未解决的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0E-%E8%BF%99%E6%AC%A1%E6%8E%92%E6%9F%A5%E5%BE%97%E5%88%B0%E7%9A%84%E7%BB%93%E8%AE%BA"><span class="nav-text">0x0E 这次排查得到的结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0F-%E5%85%AC%E5%BC%80%E6%9C%AC%E6%96%87%E6%97%B6%E7%9A%84%E6%96%87%E4%BB%B6%E8%8C%83%E5%9B%B4"><span class="nav-text">0x0F 公开本文时的文件范围</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-lollipop"></i>&nbsp;&nbsp;<a href="/">B1ear</a>
+            
+        </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js"></script>
+
+
+
+	
+</body>
+
+</html>
